@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:checkly/modules/auth/controllers/auth_controller.dart';
-import 'package:checkly/core/theme/app_theme.dart';
-import 'package:checkly/routes/app_pages.dart';
+import 'package:esen/modules/auth/controllers/auth_controller.dart';
+import 'package:esen/core/theme/app_theme.dart';
+import 'package:esen/routes/app_pages.dart';
 
 class LoginView extends GetView<AuthController> {
   const LoginView({super.key});
@@ -38,10 +38,13 @@ class LoginView extends GetView<AuthController> {
               ),
             ),
           ),
-          
+
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 40.0,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -57,7 +60,7 @@ class LoginView extends GetView<AuthController> {
                           color: AppTheme.primary.withOpacity(0.15),
                           blurRadius: 16,
                           offset: const Offset(0, 8),
-                        )
+                        ),
                       ],
                     ),
                     clipBehavior: Clip.antiAlias,
@@ -67,14 +70,14 @@ class LoginView extends GetView<AuthController> {
                     ),
                   ),
                   const SizedBox(height: 18),
-                  
+
                   // Title and Subtitle
                   Text(
                     'e-Sen',
                     style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                          fontSize: 32,
-                          color: AppTheme.textPrimary,
-                        ),
+                      fontSize: 32,
+                      color: AppTheme.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   const Text(
@@ -103,21 +106,25 @@ class LoginView extends GetView<AuthController> {
                       children: [
                         Text(
                           'Selamat Datang',
-                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          style: Theme.of(context).textTheme.headlineLarge
+                              ?.copyWith(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w800,
                               ),
                         ),
                         const SizedBox(height: 4),
                         const Text(
-                          'Silakan masuk untuk melanjutkan ke dasbor Anda.',
-                          style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                          'Emiro Companys Workplace Attendance App.',
+                          style: TextStyle(
+                            color: AppTheme.textSecondary,
+                            fontSize: 13,
+                          ),
                         ),
                         const SizedBox(height: 28),
 
                         // Username Field
                         Text(
-                          'Email / Username',
+                          'Email/Username',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
@@ -127,10 +134,19 @@ class LoginView extends GetView<AuthController> {
                         const SizedBox(height: 8),
                         TextField(
                           controller: controller.usernameController,
-                          style: const TextStyle(fontSize: 15, color: AppTheme.textPrimary, fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: AppTheme.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
                           decoration: const InputDecoration(
-                            hintText: 'Karyawan wajib @gmail.com (contoh: user@gmail.com)',
-                            prefixIcon: Icon(Icons.alternate_email, size: 20, color: AppTheme.textSecondary),
+                            hintText:
+                                'Karyawan wajib @gmail.com (contoh: user@gmail.com)',
+                            prefixIcon: Icon(
+                              Icons.alternate_email,
+                              size: 20,
+                              color: AppTheme.textSecondary,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -149,10 +165,18 @@ class LoginView extends GetView<AuthController> {
                           return TextField(
                             controller: controller.passwordController,
                             obscureText: controller.rxObscurePassword.value,
-                            style: const TextStyle(fontSize: 15, color: AppTheme.textPrimary, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: AppTheme.textPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
                             decoration: InputDecoration(
                               hintText: 'Ketik password Anda',
-                              prefixIcon: const Icon(Icons.lock_open_rounded, size: 20, color: AppTheme.textSecondary),
+                              prefixIcon: const Icon(
+                                Icons.lock_open_rounded,
+                                size: 20,
+                                color: AppTheme.textSecondary,
+                              ),
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   controller.rxObscurePassword.value
@@ -161,7 +185,8 @@ class LoginView extends GetView<AuthController> {
                                   size: 20,
                                   color: AppTheme.textSecondary,
                                 ),
-                                onPressed: () => controller.rxObscurePassword.toggle(),
+                                onPressed: () =>
+                                    controller.rxObscurePassword.toggle(),
                               ),
                             ),
                           );
@@ -181,18 +206,25 @@ class LoginView extends GetView<AuthController> {
                                     value: true,
                                     onChanged: (val) {},
                                     activeColor: AppTheme.primary,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 8),
                                 const Text(
                                   'Ingat Saya',
-                                  style: TextStyle(color: AppTheme.textSecondary, fontSize: 13, fontWeight: FontWeight.w500),
+                                  style: TextStyle(
+                                    color: AppTheme.textSecondary,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ],
                             ),
                             GestureDetector(
-                              onTap: () => _openForgotPasswordBottomSheet(context),
+                              onTap: () =>
+                                  _openForgotPasswordBottomSheet(context),
                               child: const Text(
                                 'Lupa Password?',
                                 style: TextStyle(
@@ -220,11 +252,13 @@ class LoginView extends GetView<AuthController> {
                                     color: AppTheme.primary.withOpacity(0.25),
                                     blurRadius: 16,
                                     offset: const Offset(0, 6),
-                                  )
+                                  ),
                                 ],
                               ),
                               child: ElevatedButton(
-                                onPressed: controller.rxIsLoading.value ? null : controller.login,
+                                onPressed: controller.rxIsLoading.value
+                                    ? null
+                                    : controller.login,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
@@ -240,7 +274,7 @@ class LoginView extends GetView<AuthController> {
                                         ),
                                       )
                                     : const Text(
-                                        'MASUK SYSTEM',
+                                        'MASUK',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 15,
@@ -262,13 +296,16 @@ class LoginView extends GetView<AuthController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        'Belum terdaftar? ',
-                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                        'Belum punya akun? ',
+                        style: TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 14,
+                        ),
                       ),
                       GestureDetector(
                         onTap: () => Get.toNamed(Routes.REGISTER),
                         child: const Text(
-                          'Buat Akun Karyawan',
+                          'Buat Akun',
                           style: TextStyle(
                             color: AppTheme.primary,
                             fontWeight: FontWeight.bold,
@@ -324,7 +361,11 @@ class LoginView extends GetView<AuthController> {
               const SizedBox(height: 24),
               const Text(
                 'Atur Ulang Password',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textPrimary),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textPrimary,
+                ),
               ),
               const SizedBox(height: 4),
               const Text(
@@ -334,7 +375,14 @@ class LoginView extends GetView<AuthController> {
               const SizedBox(height: 20),
 
               // Username/Email input
-              const Text('Email / Username Terdaftar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+              const Text(
+                'Email / Username Terdaftar',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
               const SizedBox(height: 6),
               TextField(
                 controller: identifierCtrl,
@@ -346,43 +394,68 @@ class LoginView extends GetView<AuthController> {
               const SizedBox(height: 16),
 
               // Password Baru input
-              const Text('Password Baru', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+              const Text(
+                'Password Baru',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
               const SizedBox(height: 6),
-              Obx(() => TextField(
-                controller: newPasswordCtrl,
-                obscureText: rxObscureNew.value,
-                decoration: InputDecoration(
-                  hintText: 'Minimal 6 karakter',
-                  prefixIcon: const Icon(Icons.lock_outline_rounded, size: 18),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      rxObscureNew.value ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+              Obx(
+                () => TextField(
+                  controller: newPasswordCtrl,
+                  obscureText: rxObscureNew.value,
+                  decoration: InputDecoration(
+                    hintText: 'Minimal 6 karakter',
+                    prefixIcon: const Icon(
+                      Icons.lock_outline_rounded,
                       size: 18,
                     ),
-                    onPressed: () => rxObscureNew.toggle(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        rxObscureNew.value
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 18,
+                      ),
+                      onPressed: () => rxObscureNew.toggle(),
+                    ),
                   ),
                 ),
-              )),
+              ),
               const SizedBox(height: 16),
 
               // Konfirmasi Password Baru input
-              const Text('Konfirmasi Password Baru', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+              const Text(
+                'Konfirmasi Password Baru',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
               const SizedBox(height: 6),
-              Obx(() => TextField(
-                controller: confirmPasswordCtrl,
-                obscureText: rxObscureConfirm.value,
-                decoration: InputDecoration(
-                  hintText: 'Ketik ulang password baru Anda',
-                  prefixIcon: const Icon(Icons.lock_rounded, size: 18),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      rxObscureConfirm.value ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                      size: 18,
+              Obx(
+                () => TextField(
+                  controller: confirmPasswordCtrl,
+                  obscureText: rxObscureConfirm.value,
+                  decoration: InputDecoration(
+                    hintText: 'Ketik ulang password baru Anda',
+                    prefixIcon: const Icon(Icons.lock_rounded, size: 18),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        rxObscureConfirm.value
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 18,
+                      ),
+                      onPressed: () => rxObscureConfirm.toggle(),
                     ),
-                    onPressed: () => rxObscureConfirm.toggle(),
                   ),
                 ),
-              )),
+              ),
               const SizedBox(height: 28),
 
               // Action button
@@ -399,7 +472,7 @@ class LoginView extends GetView<AuthController> {
                           color: AppTheme.primary.withOpacity(0.2),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
-                        )
+                        ),
                       ],
                     ),
                     child: ElevatedButton(
@@ -409,7 +482,9 @@ class LoginView extends GetView<AuthController> {
                         final newPwd = newPasswordCtrl.text;
                         final confirmPwd = confirmPasswordCtrl.text;
 
-                        if (identifier.isEmpty || newPwd.isEmpty || confirmPwd.isEmpty) {
+                        if (identifier.isEmpty ||
+                            newPwd.isEmpty ||
+                            confirmPwd.isEmpty) {
                           Get.snackbar(
                             'Validasi Gagal',
                             'Semua kolom wajib diisi',
@@ -445,12 +520,15 @@ class LoginView extends GetView<AuthController> {
                         FocusScope.of(context).unfocus();
                         rxIsResetting.value = true;
 
-                        final success = await controller.resetPassword(identifier, newPwd);
+                        final success = await controller.resetPassword(
+                          identifier,
+                          newPwd,
+                        );
                         rxIsResetting.value = false;
 
                         if (success) {
                           Get.back(); // close bottom sheet
-                          
+
                           identifierCtrl.clear();
                           newPasswordCtrl.clear();
                           confirmPasswordCtrl.clear();
@@ -473,9 +551,18 @@ class LoginView extends GetView<AuthController> {
                           ? const SizedBox(
                               height: 20,
                               width: 20,
-                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ),
                             )
-                          : const Text('RESET PASSWORD', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          : const Text(
+                              'RESET PASSWORD',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                 );

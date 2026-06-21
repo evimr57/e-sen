@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:checkly/modules/admin/controllers/admin_controller.dart';
-import 'package:checkly/modules/auth/controllers/auth_controller.dart';
-import 'package:checkly/modules/admin/views/manage_coordinate_view.dart';
-import 'package:checkly/modules/admin/views/manage_attendance_view.dart';
-import 'package:checkly/modules/admin/views/manage_employee_view.dart';
-import 'package:checkly/core/theme/app_theme.dart';
+import 'package:esen/modules/admin/controllers/admin_controller.dart';
+import 'package:esen/modules/auth/controllers/auth_controller.dart';
+import 'package:esen/modules/admin/views/manage_coordinate_view.dart';
+import 'package:esen/modules/admin/views/manage_attendance_view.dart';
+import 'package:esen/modules/admin/views/manage_employee_view.dart';
+import 'package:esen/core/theme/app_theme.dart';
 
 class AdminDashboardView extends GetView<AdminController> {
   const AdminDashboardView({super.key});
@@ -33,10 +33,10 @@ class AdminDashboardView extends GetView<AdminController> {
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 10,
                 offset: const Offset(0, -4),
-              )
+              ),
             ],
           ),
           child: NavigationBar(
@@ -45,27 +45,51 @@ class AdminDashboardView extends GetView<AdminController> {
               controller.rxNavIndex.value = index;
             },
             backgroundColor: AppTheme.surface,
-            indicatorColor: AppTheme.primary.withOpacity(0.12),
+            indicatorColor: AppTheme.primary.withValues(alpha: 0.12),
             height: 72,
             destinations: const [
               NavigationDestination(
-                icon: Icon(Icons.dashboard_outlined, color: AppTheme.textSecondary),
-                selectedIcon: Icon(Icons.dashboard_rounded, color: AppTheme.primary),
+                icon: Icon(
+                  Icons.dashboard_outlined,
+                  color: AppTheme.textSecondary,
+                ),
+                selectedIcon: Icon(
+                  Icons.dashboard_rounded,
+                  color: AppTheme.primary,
+                ),
                 label: 'Dashboard',
               ),
               NavigationDestination(
-                icon: Icon(Icons.pin_drop_outlined, color: AppTheme.textSecondary),
-                selectedIcon: Icon(Icons.pin_drop_rounded, color: AppTheme.primary),
+                icon: Icon(
+                  Icons.pin_drop_outlined,
+                  color: AppTheme.textSecondary,
+                ),
+                selectedIcon: Icon(
+                  Icons.pin_drop_rounded,
+                  color: AppTheme.primary,
+                ),
                 label: 'Koordinat',
               ),
               NavigationDestination(
-                icon: Icon(Icons.assignment_outlined, color: AppTheme.textSecondary),
-                selectedIcon: Icon(Icons.assignment_rounded, color: AppTheme.primary),
+                icon: Icon(
+                  Icons.assignment_outlined,
+                  color: AppTheme.textSecondary,
+                ),
+                selectedIcon: Icon(
+                  Icons.assignment_rounded,
+                  color: AppTheme.primary,
+                ),
                 label: 'Absensi',
               ),
               NavigationDestination(
-                icon: Icon(Icons.people_alt_outlined, color: AppTheme.textSecondary),
-                selectedIcon: Icon(Icons.people_alt_rounded, color: AppTheme.primary),
+                icon: Icon(
+                  Icons.people_alt_outlined,
+                  color: AppTheme.textSecondary,
+                ),
+                selectedIcon: Icon(
+                  Icons.people_alt_rounded,
+                  color: AppTheme.primary,
+                ),
                 label: 'Karyawan',
               ),
             ],
@@ -75,7 +99,10 @@ class AdminDashboardView extends GetView<AdminController> {
     );
   }
 
-  Widget _buildDashboardTab(BuildContext context, AuthController authController) {
+  Widget _buildDashboardTab(
+    BuildContext context,
+    AuthController authController,
+  ) {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
@@ -97,20 +124,26 @@ class AdminDashboardView extends GetView<AdminController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Welcome Header Card
+              // ===== Welcome Header Card =====
               _buildWelcomeCard(context, authController),
               const SizedBox(height: 28),
 
-              // Analytics Section Header
+              // ===== KPI Section (grouped under one section header) =====
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Indikator Utama Kehadiran (KPI)',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppTheme.textPrimary,
-                        ),
+                  Expanded(
+                    child: Text(
+                      'Indikator Utama Kehadiran (KPI)',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: AppTheme.textPrimary,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   Text(
                     'Hari Ini',
                     style: TextStyle(
@@ -123,12 +156,11 @@ class AdminDashboardView extends GetView<AdminController> {
               ),
               const SizedBox(height: 14),
 
-              // 4 KPI Summary Cards
               Obx(() {
                 final totalLogs = controller.rxTotalAbsensi.value;
                 final totalHadir = controller.rxTotalHadir.value;
                 final totalLuarRadius = controller.rxTotalLuarRadius.value;
-                
+
                 return GridView.count(
                   crossAxisCount: 2,
                   shrinkWrap: true,
@@ -158,7 +190,7 @@ class AdminDashboardView extends GetView<AdminController> {
                       icon: Icons.warning_amber_rounded,
                       iconColor: AppTheme.warning,
                     ),
-                     _buildKpiCard(
+                    _buildKpiCard(
                       title: 'Total Karyawan',
                       value: '${controller.rxTotalEmployees.value}',
                       subtitle: 'Terdaftar aktif',
@@ -170,68 +202,47 @@ class AdminDashboardView extends GetView<AdminController> {
               }),
               const SizedBox(height: 28),
 
-              // Custom Analytics Chart Section
+              // ===== Analytics Chart Section =====
               _buildAnalyticsCharts(context),
-              const SizedBox(height: 28),
+              const SizedBox(height: 32),
 
-              // Quick Control Menu Cards (Visual and Navigation Helper)
-              Text(
-                'Kontrol Panel Cepat',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppTheme.textPrimary,
-                    ),
-              ),
-              const SizedBox(height: 14),
+              // ===== Recent Activity Section =====
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: _buildPanelMenuCard(
-                      title: 'Konfigurasi Koordinat',
-                      description: 'Atur koordinat GPS kantor & radius absensi 100 meter.',
-                      icon: Icons.map_outlined,
-                      gradient: AppTheme.accentGradient,
-                      onTap: () => controller.rxNavIndex.value = 1,
+                    child: Text(
+                      'Aktivitas Absensi Terbaru',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: AppTheme.textPrimary,
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _buildPanelMenuCard(
-                      title: 'Kelola Data Absensi',
-                      description: 'Akses penuh database absensi, edit status, & hapus data.',
-                      icon: Icons.table_chart_outlined,
-                      gradient: AppTheme.primaryGradient,
-                      onTap: () => controller.rxNavIndex.value = 2,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildPanelMenuCard(
-                title: 'Kelola Data Karyawan (CRUD)',
-                description: 'Tambah data karyawan baru, edit informasi login & foto profil, serta hapus karyawan.',
-                icon: Icons.people_alt_outlined,
-                gradient: AppTheme.successGradient,
-                onTap: () => controller.rxNavIndex.value = 3,
-              ),
-              const SizedBox(height: 28),
-
-              // Recent Logs
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Aktivitas Absensi Terbaru',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppTheme.textPrimary,
-                        ),
-                  ),
+                  const SizedBox(width: 8),
                   TextButton(
                     onPressed: () => controller.rxNavIndex.value = 2,
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
                     child: const Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('Lihat Semua Log', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primary)),
+                        Text(
+                          'Lihat Semua',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.primary,
+                            fontSize: 13,
+                          ),
+                        ),
                         SizedBox(width: 4),
-                        Icon(Icons.arrow_forward_rounded, size: 16, color: AppTheme.primary),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 16,
+                          color: AppTheme.primary,
+                        ),
                       ],
                     ),
                   ),
@@ -240,7 +251,8 @@ class AdminDashboardView extends GetView<AdminController> {
               const SizedBox(height: 12),
 
               Obx(() {
-                if (controller.rxIsLoading.value && controller.rxAttendanceLogs.isEmpty) {
+                if (controller.rxIsLoading.value &&
+                    controller.rxAttendanceLogs.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
@@ -256,9 +268,19 @@ class AdminDashboardView extends GetView<AdminController> {
                     child: const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.history_toggle_off_rounded, size: 48, color: Colors.grey),
+                        Icon(
+                          Icons.history_toggle_off_rounded,
+                          size: 48,
+                          color: Colors.grey,
+                        ),
                         SizedBox(height: 8),
-                        Text('Belum ada data masuk hari ini.', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+                        Text(
+                          'Belum ada data masuk hari ini.',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   );
@@ -273,10 +295,15 @@ class AdminDashboardView extends GetView<AdminController> {
                   separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final log = recentLogs[index];
-                    final userLogsForDay = controller.rxAttendanceLogs.where((l) =>
-                      l.userId == log.userId &&
-                      l.dateTime.startsWith(log.dateTime.substring(0, 10))
-                    ).toList();
+                    final userLogsForDay = controller.rxAttendanceLogs
+                        .where(
+                          (l) =>
+                              l.userId == log.userId &&
+                              l.dateTime.startsWith(
+                                log.dateTime.substring(0, 10),
+                              ),
+                        )
+                        .toList();
                     final type = log.getAttendanceType(userLogsForDay);
                     final punctuality = log.getPunctualityStatus(type);
 
@@ -288,41 +315,68 @@ class AdminDashboardView extends GetView<AdminController> {
                         border: Border.all(color: AppTheme.border, width: 1.5),
                       ),
                       child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
                         leading: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppTheme.border, width: 1.5),
+                            border: Border.all(
+                              color: AppTheme.border,
+                              width: 1.5,
+                            ),
                           ),
                           clipBehavior: Clip.antiAlias,
                           child: SizedBox(
                             width: 50,
                             height: 50,
                             child: File(log.photoPath).existsSync()
-                                ? Image.file(File(log.photoPath), fit: BoxFit.cover)
+                                ? Image.file(
+                                    File(log.photoPath),
+                                    fit: BoxFit.cover,
+                                  )
                                 : const Icon(Icons.person, color: Colors.grey),
                           ),
                         ),
                         title: Text(
                           log.userName,
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textPrimary,
+                          ),
                         ),
                         subtitle: Padding(
                           padding: const EdgeInsets.only(top: 4.0),
                           child: Row(
                             children: [
-                              const Icon(Icons.access_time_rounded, size: 13, color: AppTheme.textSecondary),
+                              const Icon(
+                                Icons.access_time_rounded,
+                                size: 13,
+                                color: AppTheme.textSecondary,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 log.dateTime.substring(11, 16),
-                                style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.textSecondary,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(width: 12),
-                              const Icon(Icons.radar, size: 13, color: AppTheme.textSecondary),
+                              const Icon(
+                                Icons.radar,
+                                size: 13,
+                                color: AppTheme.textSecondary,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 '${log.distance.toStringAsFixed(1)}m',
-                                style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.textSecondary,
+                                ),
                               ),
                             ],
                           ),
@@ -334,30 +388,41 @@ class AdminDashboardView extends GetView<AdminController> {
                             Text(
                               type.toUpperCase(),
                               style: TextStyle(
-                                color: type == 'Masuk' ? const Color(0xFF3B82F6) : const Color(0xFFFF6B00),
+                                color: type == 'Masuk'
+                                    ? const Color(0xFF3B82F6)
+                                    : const Color(0xFFFF6B00),
                                 fontSize: 8,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 4),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: (punctuality == 'Tepat Waktu' || punctuality == 'Pulang Normal')
-                                    ? AppTheme.success.withOpacity(0.12)
-                                    : (punctuality == 'Terlambat' || punctuality == 'Pulang Cepat')
-                                        ? AppTheme.warning.withOpacity(0.12)
-                                        : AppTheme.danger.withOpacity(0.12),
+                                color:
+                                    (punctuality == 'Tepat Waktu' ||
+                                        punctuality == 'Pulang Normal')
+                                    ? AppTheme.success.withValues(alpha: 0.12)
+                                    : (punctuality == 'Terlambat' ||
+                                          punctuality == 'Pulang Cepat')
+                                    ? AppTheme.warning.withValues(alpha: 0.12)
+                                    : AppTheme.danger.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
                                 punctuality.toUpperCase(),
                                 style: TextStyle(
-                                  color: (punctuality == 'Tepat Waktu' || punctuality == 'Pulang Normal')
+                                  color:
+                                      (punctuality == 'Tepat Waktu' ||
+                                          punctuality == 'Pulang Normal')
                                       ? AppTheme.success
-                                      : (punctuality == 'Terlambat' || punctuality == 'Pulang Cepat')
-                                          ? AppTheme.warning
-                                          : AppTheme.danger,
+                                      : (punctuality == 'Terlambat' ||
+                                            punctuality == 'Pulang Cepat')
+                                      ? AppTheme.warning
+                                      : AppTheme.danger,
                                   fontSize: 8,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -378,7 +443,10 @@ class AdminDashboardView extends GetView<AdminController> {
     );
   }
 
-  Widget _buildWelcomeCard(BuildContext context, AuthController authController) {
+  Widget _buildWelcomeCard(
+    BuildContext context,
+    AuthController authController,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -387,10 +455,10 @@ class AdminDashboardView extends GetView<AdminController> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primary.withOpacity(0.25),
+            color: AppTheme.primary.withValues(alpha: 0.25),
             blurRadius: 20,
             offset: const Offset(0, 8),
-          )
+          ),
         ],
       ),
       child: Row(
@@ -398,10 +466,14 @@ class AdminDashboardView extends GetView<AdminController> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.admin_panel_settings, color: Colors.white, size: 40),
+            child: const Icon(
+              Icons.admin_panel_settings,
+              color: Colors.white,
+              size: 40,
+            ),
           ),
           const SizedBox(width: 20),
           Expanded(
@@ -410,7 +482,12 @@ class AdminDashboardView extends GetView<AdminController> {
               children: [
                 const Text(
                   'Dashboard HRD Administrator',
-                  style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -451,10 +528,19 @@ class AdminDashboardView extends GetView<AdminController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textSecondary,
+                  ),
+                ),
               ),
+              const SizedBox(width: 6),
               Icon(icon, color: iconColor, size: 22),
             ],
           ),
@@ -473,10 +559,13 @@ class AdminDashboardView extends GetView<AdminController> {
               const SizedBox(height: 2),
               Text(
                 subtitle,
-                style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary),
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: AppTheme.textSecondary,
+                ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -497,16 +586,28 @@ class AdminDashboardView extends GetView<AdminController> {
         children: [
           const Text(
             'Analisis Tren Kehadiran Mingguan',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textPrimary),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: AppTheme.textPrimary,
+            ),
           ),
           const SizedBox(height: 24),
-          
+
           SizedBox(
             height: 180,
             child: Obx(() {
               final trend = controller.rxWeeklyTrend;
-              final dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-              
+              final dayNames = [
+                'Sen',
+                'Sel',
+                'Rab',
+                'Kam',
+                'Jum',
+                'Sab',
+                'Min',
+              ];
+
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -524,13 +625,22 @@ class AdminDashboardView extends GetView<AdminController> {
     );
   }
 
-  Widget _buildBar(BuildContext context, String day, double percentage, String count) {
+  Widget _buildBar(
+    BuildContext context,
+    String day,
+    double percentage,
+    String count,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Text(
           count,
-          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+          style: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimary,
+          ),
         ),
         const SizedBox(height: 6),
         Container(
@@ -544,54 +654,13 @@ class AdminDashboardView extends GetView<AdminController> {
         const SizedBox(height: 8),
         Text(
           day,
-          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+          style: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textSecondary,
+          ),
         ),
       ],
-    );
-  }
-
-  Widget _buildPanelMenuCard({
-    required String title,
-    required String description,
-    required IconData icon,
-    required Gradient gradient,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: AppTheme.cardShadow,
-          border: Border.all(color: AppTheme.border, width: 1.5),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                gradient: gradient,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: Colors.white, size: 22),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.textPrimary),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              description,
-              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11, height: 1.3),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

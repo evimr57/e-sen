@@ -1,16 +1,16 @@
 import 'package:get/get.dart';
-import 'package:checkly/modules/auth/bindings/auth_binding.dart';
-import 'package:checkly/modules/auth/views/login_view.dart';
-import 'package:checkly/modules/auth/views/register_view.dart';
-import 'package:checkly/modules/admin/bindings/admin_binding.dart';
-import 'package:checkly/modules/admin/views/admin_dashboard_view.dart';
-import 'package:checkly/modules/admin/views/manage_coordinate_view.dart';
-import 'package:checkly/modules/admin/views/manage_attendance_view.dart';
-import 'package:checkly/modules/user/bindings/user_binding.dart';
-import 'package:checkly/modules/user/views/user_dashboard_view.dart';
-import 'package:checkly/modules/user/views/user_profile_view.dart';
-import 'package:checkly/modules/splash/views/splash_view.dart';
-import 'package:checkly/modules/splash/controllers/splash_controller.dart';
+import 'package:esen/modules/auth/bindings/auth_binding.dart';
+import 'package:esen/modules/auth/views/login_view.dart';
+import 'package:esen/modules/auth/views/register_view.dart';
+import 'package:esen/modules/admin/bindings/admin_binding.dart';
+import 'package:esen/modules/admin/views/admin_dashboard_view.dart';
+import 'package:esen/modules/admin/views/manage_coordinate_view.dart';
+import 'package:esen/modules/admin/views/manage_attendance_view.dart';
+import 'package:esen/modules/user/bindings/user_binding.dart';
+import 'package:esen/modules/user/views/user_dashboard_view.dart';
+import 'package:esen/modules/user/views/user_profile_view.dart';
+import 'package:esen/modules/splash/views/splash_view.dart';
+import 'package:esen/modules/splash/controllers/splash_controller.dart';
 
 part 'app_routes.dart';
 

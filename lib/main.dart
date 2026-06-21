@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:checkly/core/database/db_helper.dart';
-import 'package:checkly/core/theme/app_theme.dart';
-import 'package:checkly/routes/app_pages.dart';
+import 'package:esen/core/database/db_helper.dart';
+import 'package:esen/core/theme/app_theme.dart';
+import 'package:esen/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

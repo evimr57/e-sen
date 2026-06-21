@@ -5,15 +5,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:checkly/core/database/db_helper.dart';
-import 'package:checkly/modules/auth/controllers/auth_controller.dart';
-import 'package:checkly/data/models/coordinate_model.dart';
-import 'package:checkly/data/models/attendance_model.dart';
-import 'package:checkly/core/theme/app_theme.dart';
+import 'package:esen/core/database/db_helper.dart';
+import 'package:esen/modules/auth/controllers/auth_controller.dart';
+import 'package:esen/data/models/coordinate_model.dart';
+import 'package:esen/data/models/attendance_model.dart';
+import 'package:esen/core/theme/app_theme.dart';
 
 class UserController extends GetxController {
   final rxIsLoading = false.obs;
-  
+
   // Location States
   final rxCurrentPosition = Rxn<Position>();
   final rxTargetCoordinate = Rxn<CoordinateModel>();
@@ -45,7 +45,12 @@ class UserController extends GetxController {
       // 2. Request and track location
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        Get.snackbar('GPS Mati', 'Harap aktifkan GPS perangkat Anda', backgroundColor: Colors.amber, colorText: Colors.black);
+        Get.snackbar(
+          'GPS Mati',
+          'Harap aktifkan GPS perangkat Anda',
+          backgroundColor: Colors.amber,
+          colorText: Colors.black,
+        );
         return;
       }
 
@@ -53,18 +58,30 @@ class UserController extends GetxController {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          Get.snackbar('Izin Ditolak', 'Akses lokasi diperlukan untuk absensi', backgroundColor: Colors.redAccent, colorText: Colors.white);
+          Get.snackbar(
+            'Izin Ditolak',
+            'Akses lokasi diperlukan untuk absensi',
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white,
+          );
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        Get.snackbar('Izin Ditolak Permanen', 'Harap aktifkan izin lokasi di pengaturan sistem', backgroundColor: Colors.redAccent, colorText: Colors.white);
+        Get.snackbar(
+          'Izin Ditolak Permanen',
+          'Harap aktifkan izin lokasi di pengaturan sistem',
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+        );
         return;
       }
 
       // Get initial position
-      final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
       rxCurrentPosition.value = position;
 
       // Calculate initial distance
@@ -81,7 +98,12 @@ class UserController extends GetxController {
         calculateDistanceAndRadius();
       });
     } catch (e) {
-      Get.snackbar('GPS Error', 'Gagal memuat GPS: $e', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'GPS Error',
+        'Gagal memuat GPS: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     } finally {
       rxIsLoading.value = false;
     }
@@ -120,12 +142,22 @@ class UserController extends GetxController {
     final user = authController.currentUser;
 
     if (user == null || user.id == null) {
-      Get.snackbar('Sesi Berakhir', 'Silakan login kembali', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Sesi Berakhir',
+        'Silakan login kembali',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
       return;
     }
 
     if (rxTargetCoordinate.value == null) {
-      Get.snackbar('Error', 'Koordinat target absensi belum diatur oleh admin', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Koordinat target absensi belum diatur oleh admin',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -133,7 +165,9 @@ class UserController extends GetxController {
     if (!rxIsWithinRadius.value) {
       Get.dialog(
         AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: const Row(
             children: [
               Icon(Icons.warning_amber_rounded, color: AppTheme.warning),
@@ -164,7 +198,12 @@ class UserController extends GetxController {
       );
 
       if (image == null) {
-        Get.snackbar('Dibatalkan', 'Foto wajib diambil untuk absensi', backgroundColor: Colors.amber, colorText: Colors.black);
+        Get.snackbar(
+          'Dibatalkan',
+          'Foto wajib diambil untuk absensi',
+          backgroundColor: Colors.amber,
+          colorText: Colors.black,
+        );
         return;
       }
 
@@ -172,14 +211,18 @@ class UserController extends GetxController {
 
       // Save photo to App Documents directory
       final appDocDir = await getApplicationDocumentsDirectory();
-      final String fileName = 'att_${user.username}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final String fileName =
+          'att_${user.username}_${DateTime.now().millisecondsSinceEpoch}.jpg';
       final String localPath = p.join(appDocDir.path, fileName);
       final File savedImage = await File(image.path).copy(localPath);
 
       final attendance = AttendanceModel(
         userId: user.id!,
         userName: user.username,
-        dateTime: DateTime.now().toIso8601String().replaceAll('T', ' ').substring(0, 19),
+        dateTime: DateTime.now()
+            .toIso8601String()
+            .replaceAll('T', ' ')
+            .substring(0, 19),
         latitude: rxCurrentPosition.value!.latitude,
         longitude: rxCurrentPosition.value!.longitude,
         photoPath: savedImage.path,
@@ -191,17 +234,27 @@ class UserController extends GetxController {
 
       Get.dialog(
         Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.check_circle, color: AppTheme.success, size: 64),
+                const Icon(
+                  Icons.check_circle,
+                  color: AppTheme.success,
+                  size: 64,
+                ),
                 const SizedBox(height: 16),
                 const Text(
                   'Absensi Berhasil',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppTheme.primary),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: AppTheme.primary,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 const Text(
@@ -226,7 +279,12 @@ class UserController extends GetxController {
         ),
       );
     } catch (e) {
-      Get.snackbar('Gagal Absensi', 'Gagal memproses absensi: $e', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Gagal Absensi',
+        'Gagal memproses absensi: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     } finally {
       rxIsLoading.value = false;
     }

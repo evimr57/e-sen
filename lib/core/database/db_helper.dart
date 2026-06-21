@@ -1,8 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:checkly/data/models/user_model.dart';
-import 'package:checkly/data/models/coordinate_model.dart';
-import 'package:checkly/data/models/attendance_model.dart';
+import 'package:esen/data/models/user_model.dart';
+import 'package:esen/data/models/coordinate_model.dart';
+import 'package:esen/data/models/attendance_model.dart';
 
 class DbHelper {
   static final DbHelper instance = DbHelper._init();
@@ -69,7 +69,11 @@ class DbHelper {
         ''');
 
         // Seed admin if not present
-        final adminCheck = await db.query('users', where: 'username = ?', whereArgs: ['admin']);
+        final adminCheck = await db.query(
+          'users',
+          where: 'username = ?',
+          whereArgs: ['admin'],
+        );
         if (adminCheck.isEmpty) {
           await db.insert('users', {
             'username': 'admin',
@@ -80,7 +84,11 @@ class DbHelper {
         }
 
         // Seed default user if not present
-        final userCheck = await db.query('users', where: 'username = ?', whereArgs: ['user']);
+        final userCheck = await db.query(
+          'users',
+          where: 'username = ?',
+          whereArgs: ['user'],
+        );
         if (userCheck.isEmpty) {
           await db.insert('users', {
             'username': 'user',
@@ -153,7 +161,11 @@ class DbHelper {
     ''');
 
     // Seed default Admin & User
-    final adminCheck = await db.query('users', where: 'username = ?', whereArgs: ['admin']);
+    final adminCheck = await db.query(
+      'users',
+      where: 'username = ?',
+      whereArgs: ['admin'],
+    );
     if (adminCheck.isEmpty) {
       await db.insert('users', {
         'username': 'admin',
@@ -163,7 +175,11 @@ class DbHelper {
       });
     }
 
-    final userCheck = await db.query('users', where: 'username = ?', whereArgs: ['user']);
+    final userCheck = await db.query(
+      'users',
+      where: 'username = ?',
+      whereArgs: ['user'],
+    );
     if (userCheck.isEmpty) {
       await db.insert('users', {
         'username': 'user',
@@ -229,7 +245,7 @@ class DbHelper {
   Future<int> getEmployeeCount() async {
     final db = await instance.database;
     final count = Sqflite.firstIntValue(
-      await db.rawQuery("SELECT COUNT(*) FROM users WHERE role = 'user'")
+      await db.rawQuery("SELECT COUNT(*) FROM users WHERE role = 'user'"),
     );
     return count ?? 0;
   }
@@ -247,11 +263,7 @@ class DbHelper {
 
   Future<int> deleteUser(int id) async {
     final db = await instance.database;
-    return await db.delete(
-      'users',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 
   // --- COORDINATE OPERATIONS ---
@@ -288,11 +300,7 @@ class DbHelper {
 
   Future<int> deleteCoordinate(int id) async {
     final db = await instance.database;
-    return await db.delete(
-      'coordinates',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('coordinates', where: 'id = ?', whereArgs: [id]);
   }
 
   // --- ATTENDANCE OPERATIONS ---
@@ -331,10 +339,6 @@ class DbHelper {
 
   Future<int> deleteAttendance(int id) async {
     final db = await instance.database;
-    return await db.delete(
-      'attendance',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('attendance', where: 'id = ?', whereArgs: [id]);
   }
 }

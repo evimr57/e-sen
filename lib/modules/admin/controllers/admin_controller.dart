@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:checkly/core/database/db_helper.dart';
-import 'package:checkly/data/models/coordinate_model.dart';
-import 'package:checkly/data/models/attendance_model.dart';
-import 'package:checkly/data/models/user_model.dart';
-import 'package:checkly/core/theme/app_theme.dart';
+import 'package:esen/core/database/db_helper.dart';
+import 'package:esen/data/models/coordinate_model.dart';
+import 'package:esen/data/models/attendance_model.dart';
+import 'package:esen/data/models/user_model.dart';
+import 'package:esen/core/theme/app_theme.dart';
 
 class AdminController extends GetxController {
   // Input fields for coordinate settings
@@ -16,12 +16,12 @@ class AdminController extends GetxController {
 
   final rxIsLoading = false.obs;
   final rxNavIndex = 0.obs; // bottom navigation active tab
-  
+
   // Reactive values for the map preview in coordinate management
   final rxFormLatitude = 0.0.obs;
   final rxFormLongitude = 0.0.obs;
   final rxFormRadius = 100.0.obs;
-  
+
   // Real stats
   final rxTotalEmployees = 0.obs;
   final rxWeeklyTrend = <String, Map<String, dynamic>>{
@@ -46,7 +46,7 @@ class AdminController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    
+
     // Add text field listeners to update reactive preview map values in real time
     latitudeController.addListener(() {
       final val = double.tryParse(latitudeController.text);
@@ -60,7 +60,7 @@ class AdminController extends GetxController {
       final val = double.tryParse(radiusController.text);
       if (val != null) rxFormRadius.value = val;
     });
-    
+
     refreshData();
   }
 
@@ -81,7 +81,12 @@ class AdminController extends GetxController {
       await calculateStats();
       await loadEmployees();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal memuat data: $e', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Gagal memuat data: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     } finally {
       rxIsLoading.value = false;
     }
@@ -117,12 +122,19 @@ class AdminController extends GetxController {
   }
 
   Future<void> calculateStats() async {
-    final todayStr = DateTime.now().toIso8601String().substring(0, 10); // YYYY-MM-DD
-    final todayLogs = rxAttendanceLogs.where((log) => log.dateTime.startsWith(todayStr)).toList();
+    final todayStr = DateTime.now().toIso8601String().substring(
+      0,
+      10,
+    ); // YYYY-MM-DD
+    final todayLogs = rxAttendanceLogs
+        .where((log) => log.dateTime.startsWith(todayStr))
+        .toList();
 
     rxTotalAbsensi.value = todayLogs.length;
     rxTotalHadir.value = todayLogs.where((log) => log.status == 'hadir').length;
-    rxTotalLuarRadius.value = todayLogs.where((log) => log.status != 'hadir').length;
+    rxTotalLuarRadius.value = todayLogs
+        .where((log) => log.status != 'hadir')
+        .length;
 
     // Get real total employee count from database
     final totalEmployees = await DbHelper.instance.getEmployeeCount();
@@ -132,24 +144,23 @@ class AdminController extends GetxController {
     final now = DateTime.now();
     // Monday of current week
     final monday = now.subtract(Duration(days: now.weekday - 1));
-    
+
     final dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
     final Map<String, Map<String, dynamic>> trend = {};
-    
+
     for (int i = 0; i < 7; i++) {
       final dayDate = monday.add(Duration(days: i));
       final dayDateStr = dayDate.toIso8601String().substring(0, 10);
-      
+
       // Count unique users who checked in on this day
-      final dayLogs = rxAttendanceLogs.where((log) => log.dateTime.startsWith(dayDateStr)).toList();
+      final dayLogs = rxAttendanceLogs
+          .where((log) => log.dateTime.startsWith(dayDateStr))
+          .toList();
       final uniqueUserIds = dayLogs.map((l) => l.userId).toSet();
       final count = uniqueUserIds.length;
-      
+
       final pct = totalEmployees > 0 ? (count / totalEmployees) : 0.0;
-      trend[dayNames[i]] = {
-        'percentage': pct.clamp(0.0, 1.0),
-        'count': count,
-      };
+      trend[dayNames[i]] = {'percentage': pct.clamp(0.0, 1.0), 'count': count};
     }
     rxWeeklyTrend.assignAll(trend);
   }
@@ -162,7 +173,12 @@ class AdminController extends GetxController {
     final radStr = radiusController.text.trim();
 
     if (name.isEmpty || latStr.isEmpty || lngStr.isEmpty || radStr.isEmpty) {
-      Get.snackbar('Error', 'Semua kolom koordinat wajib diisi', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Semua kolom koordinat wajib diisi',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -171,7 +187,12 @@ class AdminController extends GetxController {
     final rad = double.tryParse(radStr);
 
     if (lat == null || lng == null || rad == null) {
-      Get.snackbar('Error', 'Format koordinat atau radius harus angka desimal', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Format koordinat atau radius harus angka desimal',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -188,7 +209,12 @@ class AdminController extends GetxController {
           radiusMeters: rad,
         );
         await DbHelper.instance.updateCoordinate(updated);
-        Get.snackbar('Sukses', 'Titik koordinat berhasil diperbarui', backgroundColor: const Color(0xFF10B981), colorText: Colors.white);
+        Get.snackbar(
+          'Sukses',
+          'Titik koordinat berhasil diperbarui',
+          backgroundColor: const Color(0xFF10B981),
+          colorText: Colors.white,
+        );
       } else {
         // Create new
         final newCoord = CoordinateModel(
@@ -198,18 +224,31 @@ class AdminController extends GetxController {
           radiusMeters: rad,
         );
         await DbHelper.instance.setCoordinate(newCoord);
-        Get.snackbar('Sukses', 'Titik koordinat berhasil disimpan', backgroundColor: const Color(0xFF10B981), colorText: Colors.white);
+        Get.snackbar(
+          'Sukses',
+          'Titik koordinat berhasil disimpan',
+          backgroundColor: const Color(0xFF10B981),
+          colorText: Colors.white,
+        );
       }
       await refreshData();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menyimpan koordinat: $e', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Gagal menyimpan koordinat: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     } finally {
       rxIsLoading.value = false;
     }
   }
 
   // --- Attendance Log CRUD ---
-  Future<void> updateAttendanceStatus(AttendanceModel log, String newStatus) async {
+  Future<void> updateAttendanceStatus(
+    AttendanceModel log,
+    String newStatus,
+  ) async {
     final updated = AttendanceModel(
       id: log.id,
       userId: log.userId,
@@ -225,10 +264,20 @@ class AdminController extends GetxController {
     rxIsLoading.value = true;
     try {
       await DbHelper.instance.updateAttendance(updated);
-      Get.snackbar('Sukses', 'Status absensi berhasil diubah', backgroundColor: const Color(0xFF10B981), colorText: Colors.white);
+      Get.snackbar(
+        'Sukses',
+        'Status absensi berhasil diubah',
+        backgroundColor: const Color(0xFF10B981),
+        colorText: Colors.white,
+      );
       await refreshData();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal memperbarui status: $e', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Gagal memperbarui status: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     } finally {
       rxIsLoading.value = false;
     }
@@ -238,10 +287,20 @@ class AdminController extends GetxController {
     rxIsLoading.value = true;
     try {
       await DbHelper.instance.deleteAttendance(id);
-      Get.snackbar('Sukses', 'Data absensi berhasil dihapus', backgroundColor: const Color(0xFF10B981), colorText: Colors.white);
+      Get.snackbar(
+        'Sukses',
+        'Data absensi berhasil dihapus',
+        backgroundColor: const Color(0xFF10B981),
+        colorText: Colors.white,
+      );
       await refreshData();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menghapus data: $e', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Gagal menghapus data: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     } finally {
       rxIsLoading.value = false;
     }
@@ -252,7 +311,12 @@ class AdminController extends GetxController {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        Get.snackbar('GPS Nonaktif', 'Harap aktifkan GPS Anda terlebih dahulu', backgroundColor: Colors.redAccent, colorText: Colors.white);
+        Get.snackbar(
+          'GPS Nonaktif',
+          'Harap aktifkan GPS Anda terlebih dahulu',
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+        );
         return;
       }
 
@@ -260,7 +324,12 @@ class AdminController extends GetxController {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          Get.snackbar('Izin Ditolak', 'Aplikasi memerlukan izin akses lokasi', backgroundColor: Colors.redAccent, colorText: Colors.white);
+          Get.snackbar(
+            'Izin Ditolak',
+            'Aplikasi memerlukan izin akses lokasi',
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white,
+          );
           return;
         }
       }
@@ -268,9 +337,19 @@ class AdminController extends GetxController {
       final position = await Geolocator.getCurrentPosition();
       latitudeController.text = position.latitude.toString();
       longitudeController.text = position.longitude.toString();
-      Get.snackbar('Sukses', 'Lokasi GPS saat ini berhasil disematkan', backgroundColor: AppTheme.success, colorText: Colors.white);
+      Get.snackbar(
+        'Sukses',
+        'Lokasi GPS saat ini berhasil disematkan',
+        backgroundColor: AppTheme.success,
+        colorText: Colors.white,
+      );
     } catch (e) {
-      Get.snackbar('Error', 'Gagal mengambil lokasi saat ini: $e', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Gagal mengambil lokasi saat ini: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     } finally {
       rxIsLoading.value = false;
     }
@@ -284,10 +363,19 @@ class AdminController extends GetxController {
     rxEmployees.assignAll(employees);
   }
 
-  Future<void> addEmployee(String username, String email, String password) async {
+  Future<void> addEmployee(
+    String username,
+    String email,
+    String password,
+  ) async {
     final isTaken = await DbHelper.instance.isUsernameTaken(username);
     if (isTaken) {
-      Get.snackbar('Gagal', 'Username sudah terdaftar', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Gagal',
+        'Username sudah terdaftar',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -301,10 +389,20 @@ class AdminController extends GetxController {
     rxIsLoading.value = true;
     try {
       await DbHelper.instance.registerUser(newEmployee);
-      Get.snackbar('Sukses', 'Karyawan berhasil ditambahkan', backgroundColor: const Color(0xFF10B981), colorText: Colors.white);
+      Get.snackbar(
+        'Sukses',
+        'Karyawan berhasil ditambahkan',
+        backgroundColor: const Color(0xFF10B981),
+        colorText: Colors.white,
+      );
       await refreshData();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menambahkan karyawan: $e', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Gagal menambahkan karyawan: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     } finally {
       rxIsLoading.value = false;
     }
@@ -314,10 +412,20 @@ class AdminController extends GetxController {
     rxIsLoading.value = true;
     try {
       await DbHelper.instance.updateUser(updatedEmployee);
-      Get.snackbar('Sukses', 'Data karyawan berhasil diperbarui', backgroundColor: const Color(0xFF10B981), colorText: Colors.white);
+      Get.snackbar(
+        'Sukses',
+        'Data karyawan berhasil diperbarui',
+        backgroundColor: const Color(0xFF10B981),
+        colorText: Colors.white,
+      );
       await refreshData();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal memperbarui data karyawan: $e', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Gagal memperbarui data karyawan: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     } finally {
       rxIsLoading.value = false;
     }
@@ -327,10 +435,20 @@ class AdminController extends GetxController {
     rxIsLoading.value = true;
     try {
       await DbHelper.instance.deleteUser(id);
-      Get.snackbar('Sukses', 'Karyawan berhasil dihapus', backgroundColor: const Color(0xFF10B981), colorText: Colors.white);
+      Get.snackbar(
+        'Sukses',
+        'Karyawan berhasil dihapus',
+        backgroundColor: const Color(0xFF10B981),
+        colorText: Colors.white,
+      );
       await refreshData();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menghapus karyawan: $e', backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        'Gagal menghapus karyawan: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     } finally {
       rxIsLoading.value = false;
     }

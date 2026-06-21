@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:checkly/modules/auth/controllers/auth_controller.dart';
-import 'package:checkly/core/theme/app_theme.dart';
+import 'package:esen/modules/auth/controllers/auth_controller.dart';
+import 'package:esen/core/theme/app_theme.dart';
 
 class RegisterView extends GetView<AuthController> {
   const RegisterView({super.key});
@@ -35,10 +35,13 @@ class RegisterView extends GetView<AuthController> {
               ),
             ),
           ),
-          
+
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 20.0,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -46,16 +49,19 @@ class RegisterView extends GetView<AuthController> {
                   Text(
                     'Pendaftaran Akun Baru',
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          fontSize: 26,
-                          color: AppTheme.textPrimary,
-                          fontWeight: FontWeight.w800,
-                        ),
+                      fontSize: 26,
+                      color: AppTheme.textPrimary,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   const Text(
                     'Isi detail kredensial Anda di bawah ini untuk memulai.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                    style: TextStyle(
+                      color: AppTheme.textSecondary,
+                      fontSize: 14,
+                    ),
                   ),
                   const SizedBox(height: 32),
 
@@ -74,7 +80,8 @@ class RegisterView extends GetView<AuthController> {
                       children: [
                         Text(
                           'Data Kredensial',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
                                 color: AppTheme.textPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -93,10 +100,18 @@ class RegisterView extends GetView<AuthController> {
                         const SizedBox(height: 6),
                         TextField(
                           controller: controller.usernameController,
-                          style: const TextStyle(fontSize: 14, color: AppTheme.textPrimary, fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppTheme.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
                           decoration: const InputDecoration(
                             hintText: 'Pilih username unik',
-                            prefixIcon: Icon(Icons.person_outline_rounded, size: 18, color: AppTheme.textSecondary),
+                            prefixIcon: Icon(
+                              Icons.person_outline_rounded,
+                              size: 18,
+                              color: AppTheme.textSecondary,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -114,15 +129,21 @@ class RegisterView extends GetView<AuthController> {
                         TextField(
                           controller: controller.emailController,
                           keyboardType: TextInputType.emailAddress,
-                          style: const TextStyle(fontSize: 14, color: AppTheme.textPrimary, fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppTheme.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
                           decoration: const InputDecoration(
                             hintText: 'alamat@email.com',
-                            prefixIcon: Icon(Icons.mail_outline_rounded, size: 18, color: AppTheme.textSecondary),
+                            prefixIcon: Icon(
+                              Icons.mail_outline_rounded,
+                              size: 18,
+                              color: AppTheme.textSecondary,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
-
-
 
                         // Password Field
                         Text(
@@ -138,10 +159,18 @@ class RegisterView extends GetView<AuthController> {
                           return TextField(
                             controller: controller.passwordController,
                             obscureText: controller.rxObscurePassword.value,
-                            style: const TextStyle(fontSize: 14, color: AppTheme.textPrimary, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppTheme.textPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
                             decoration: InputDecoration(
                               hintText: 'Minimal 6 karakter',
-                              prefixIcon: const Icon(Icons.lock_outline_rounded, size: 18, color: AppTheme.textSecondary),
+                              prefixIcon: const Icon(
+                                Icons.lock_outline_rounded,
+                                size: 18,
+                                color: AppTheme.textSecondary,
+                              ),
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   controller.rxObscurePassword.value
@@ -150,7 +179,8 @@ class RegisterView extends GetView<AuthController> {
                                   size: 18,
                                   color: AppTheme.textSecondary,
                                 ),
-                                onPressed: () => controller.rxObscurePassword.toggle(),
+                                onPressed: () =>
+                                    controller.rxObscurePassword.toggle(),
                               ),
                             ),
                           );
@@ -171,10 +201,18 @@ class RegisterView extends GetView<AuthController> {
                           return TextField(
                             controller: controller.confirmPasswordController,
                             obscureText: controller.rxObscurePassword.value,
-                            style: const TextStyle(fontSize: 14, color: AppTheme.textPrimary, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppTheme.textPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
                             decoration: InputDecoration(
                               hintText: 'Ketik ulang password',
-                              prefixIcon: const Icon(Icons.shield_outlined, size: 18, color: AppTheme.textSecondary),
+                              prefixIcon: const Icon(
+                                Icons.shield_outlined,
+                                size: 18,
+                                color: AppTheme.textSecondary,
+                              ),
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   controller.rxObscurePassword.value
@@ -183,7 +221,8 @@ class RegisterView extends GetView<AuthController> {
                                   size: 18,
                                   color: AppTheme.textSecondary,
                                 ),
-                                onPressed: () => controller.rxObscurePassword.toggle(),
+                                onPressed: () =>
+                                    controller.rxObscurePassword.toggle(),
                               ),
                             ),
                           );
@@ -204,11 +243,13 @@ class RegisterView extends GetView<AuthController> {
                                     color: AppTheme.secondary.withOpacity(0.2),
                                     blurRadius: 12,
                                     offset: const Offset(0, 4),
-                                  )
+                                  ),
                                 ],
                               ),
                               child: ElevatedButton(
-                                onPressed: controller.rxIsLoading.value ? null : controller.register,
+                                onPressed: controller.rxIsLoading.value
+                                    ? null
+                                    : controller.register,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
@@ -247,7 +288,10 @@ class RegisterView extends GetView<AuthController> {
                     children: [
                       const Text(
                         'Sudah memiliki akun? ',
-                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                        style: TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 14,
+                        ),
                       ),
                       GestureDetector(
                         onTap: () => Get.back(),

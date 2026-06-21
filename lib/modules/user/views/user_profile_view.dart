@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:checkly/modules/user/controllers/user_controller.dart';
-import 'package:checkly/modules/auth/controllers/auth_controller.dart';
-import 'package:checkly/core/theme/app_theme.dart';
-import 'package:checkly/core/database/db_helper.dart';
-import 'package:checkly/data/models/user_model.dart';
+import 'package:esen/modules/user/controllers/user_controller.dart';
+import 'package:esen/modules/auth/controllers/auth_controller.dart';
+import 'package:esen/core/theme/app_theme.dart';
+import 'package:esen/core/database/db_helper.dart';
+import 'package:esen/data/models/user_model.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UserProfileView extends GetView<UserController> {

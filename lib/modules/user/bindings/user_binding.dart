@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:checkly/modules/user/controllers/user_controller.dart';
+import 'package:esen/modules/user/controllers/user_controller.dart';
 
 class UserBinding extends Bindings {
   @override

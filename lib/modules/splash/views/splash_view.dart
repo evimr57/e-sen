@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:checkly/modules/splash/controllers/splash_controller.dart';
-import 'package:checkly/core/theme/app_theme.dart';
+import 'package:esen/modules/splash/controllers/splash_controller.dart';
+import 'package:esen/core/theme/app_theme.dart';
 
 class SplashView extends GetView<SplashController> {
   const SplashView({super.key});
@@ -39,7 +39,7 @@ class SplashView extends GetView<SplashController> {
               ),
             ),
           ),
-          
+
           Center(
             child: TweenAnimationBuilder<double>(
               duration: const Duration(milliseconds: 1200),
@@ -79,7 +79,7 @@ class SplashView extends GetView<SplashController> {
                     ),
                   ),
                   const SizedBox(height: 36),
-                  
+
                   // App Title & Tagline
                   const Text(
                     'e-Sen',
@@ -101,7 +101,7 @@ class SplashView extends GetView<SplashController> {
                     ),
                   ),
                   const SizedBox(height: 48),
-                  
+
                   // Horizontal Linear Loading Bar below logo
                   SizedBox(
                     width: 180,
@@ -111,7 +111,9 @@ class SplashView extends GetView<SplashController> {
                           borderRadius: BorderRadius.circular(10),
                           child: const LinearProgressIndicator(
                             backgroundColor: Color(0xFF1E1E24),
-                            valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primary),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppTheme.primary,
+                            ),
                             minHeight: 4,
                           ),
                         ),
@@ -131,7 +133,7 @@ class SplashView extends GetView<SplashController> {
               ),
             ),
           ),
-          
+
           // Bottom Copyright Text
           const Positioned(
             bottom: 24,

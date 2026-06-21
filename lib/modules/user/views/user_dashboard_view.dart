@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:intl/intl.dart';
-import 'package:checkly/modules/user/controllers/user_controller.dart';
-import 'package:checkly/modules/auth/controllers/auth_controller.dart';
-import 'package:checkly/modules/user/views/user_profile_view.dart';
-import 'package:checkly/core/theme/app_theme.dart';
+import 'package:esen/modules/user/controllers/user_controller.dart';
+import 'package:esen/modules/auth/controllers/auth_controller.dart';
+import 'package:esen/modules/user/views/user_profile_view.dart';
+import 'package:esen/core/theme/app_theme.dart';
 
 class UserDashboardView extends GetView<UserController> {
   const UserDashboardView({super.key});
@@ -17,10 +17,7 @@ class UserDashboardView extends GetView<UserController> {
       body: Obx(() {
         return IndexedStack(
           index: controller.rxNavIndex.value,
-          children: [
-            _buildHomeTab(context),
-            const UserProfileView(),
-          ],
+          children: [_buildHomeTab(context), const UserProfileView()],
         );
       }),
       bottomNavigationBar: Obx(() {
@@ -32,7 +29,7 @@ class UserDashboardView extends GetView<UserController> {
                 color: const Color(0xFF0F172A).withOpacity(0.06),
                 blurRadius: 20,
                 offset: const Offset(0, -4),
-              )
+              ),
             ],
           ),
           child: NavigationBar(
@@ -54,8 +51,14 @@ class UserDashboardView extends GetView<UserController> {
                 label: 'Dashboard',
               ),
               NavigationDestination(
-                icon: Icon(Icons.account_circle_outlined, color: AppTheme.textSecondary),
-                selectedIcon: Icon(Icons.account_circle_rounded, color: AppTheme.primary),
+                icon: Icon(
+                  Icons.account_circle_outlined,
+                  color: AppTheme.textSecondary,
+                ),
+                selectedIcon: Icon(
+                  Icons.account_circle_rounded,
+                  color: AppTheme.primary,
+                ),
                 label: 'Profil Saya',
               ),
             ],
@@ -88,12 +91,17 @@ class UserDashboardView extends GetView<UserController> {
                       children: [
                         Text(
                           'Halo, Selamat ${_getGreeting()}',
-                          style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppTheme.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           authController.currentUser?.username ?? 'Karyawan',
-                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          style: Theme.of(context).textTheme.headlineLarge
+                              ?.copyWith(
                                 fontSize: 24,
                                 color: AppTheme.textPrimary,
                               ),
@@ -101,7 +109,7 @@ class UserDashboardView extends GetView<UserController> {
                       ],
                     ),
                   ),
-                  
+
                   // Mini Avatar/Calendar block style indicator
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -115,11 +123,19 @@ class UserDashboardView extends GetView<UserController> {
                       children: [
                         Text(
                           DateFormat('MMM').format(now).toUpperCase(),
-                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: AppTheme.primary),
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.primary,
+                          ),
                         ),
                         Text(
                           DateFormat('d').format(now),
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: AppTheme.textPrimary),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            color: AppTheme.textPrimary,
+                          ),
                         ),
                       ],
                     ),
@@ -131,20 +147,30 @@ class UserDashboardView extends GetView<UserController> {
               // 2. Real-time Date and Attendance Status Card
               Obx(() {
                 final history = controller.rxAttendanceHistory;
-                final todayStr = DateTime.now().toIso8601String().substring(0, 10);
+                final todayStr = DateTime.now().toIso8601String().substring(
+                  0,
+                  10,
+                );
                 // Sort ascending to get first (Masuk) and last (Pulang)
-                final todayLogs = (history.where((log) => log.dateTime.startsWith(todayStr)).toList())
-                  ..sort((a, b) => a.dateTime.compareTo(b.dateTime));
-                
+                final todayLogs =
+                    (history
+                          .where((log) => log.dateTime.startsWith(todayStr))
+                          .toList())
+                      ..sort((a, b) => a.dateTime.compareTo(b.dateTime));
+
                 final hasCheckedIn = todayLogs.isNotEmpty;
                 final hasCheckedOut = todayLogs.length > 1;
-                final checkInTime = hasCheckedIn ? todayLogs.first.dateTime.substring(11, 16) : '--:--';
-                final checkOutTime = hasCheckedOut ? todayLogs.last.dateTime.substring(11, 16) : '--:--';
+                final checkInTime = hasCheckedIn
+                    ? todayLogs.first.dateTime.substring(11, 16)
+                    : '--:--';
+                final checkOutTime = hasCheckedOut
+                    ? todayLogs.last.dateTime.substring(11, 16)
+                    : '--:--';
 
                 String statusLabel = 'Belum Absen';
                 Color statusColor = AppTheme.danger;
                 IconData statusIcon = Icons.pending_actions_rounded;
-                
+
                 if (todayLogs.length >= 2) {
                   statusLabel = 'Absen Lengkap';
                   statusColor = AppTheme.success;
@@ -157,7 +183,10 @@ class UserDashboardView extends GetView<UserController> {
 
                 return Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 20,
+                  ),
                   decoration: BoxDecoration(
                     color: AppTheme.surface,
                     borderRadius: BorderRadius.circular(24),
@@ -175,19 +204,31 @@ class UserDashboardView extends GetView<UserController> {
                             children: [
                               const Text(
                                 'STATUS KEHADIRAN',
-                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary, letterSpacing: 0.8),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textSecondary,
+                                  letterSpacing: 0.8,
+                                ),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 formattedDate,
-                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textPrimary,
+                                ),
                               ),
                             ],
                           ),
-                          
+
                           // Status Badge
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: statusColor.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(20),
@@ -195,11 +236,7 @@ class UserDashboardView extends GetView<UserController> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
-                                  statusIcon,
-                                  color: statusColor,
-                                  size: 14,
-                                ),
+                                Icon(statusIcon, color: statusColor, size: 14),
                                 const SizedBox(width: 6),
                                 Text(
                                   statusLabel,
@@ -215,7 +252,7 @@ class UserDashboardView extends GetView<UserController> {
                         ],
                       ),
                       const Divider(height: 32, color: AppTheme.border),
-                      
+
                       Row(
                         children: [
                           Expanded(
@@ -226,7 +263,11 @@ class UserDashboardView extends GetView<UserController> {
                               value: checkInTime,
                             ),
                           ),
-                          Container(width: 1.5, height: 40, color: AppTheme.border),
+                          Container(
+                            width: 1.5,
+                            height: 40,
+                            color: AppTheme.border,
+                          ),
                           Expanded(
                             child: _buildAttendanceStatTile(
                               icon: Icons.logout_rounded,
@@ -235,7 +276,11 @@ class UserDashboardView extends GetView<UserController> {
                               value: checkOutTime,
                             ),
                           ),
-                          Container(width: 1.5, height: 40, color: AppTheme.border),
+                          Container(
+                            width: 1.5,
+                            height: 40,
+                            color: AppTheme.border,
+                          ),
                           Expanded(
                             child: _buildAttendanceStatTile(
                               icon: Icons.assignment_outlined,
@@ -244,8 +289,8 @@ class UserDashboardView extends GetView<UserController> {
                               value: todayLogs.length >= 2
                                   ? 'Selesai 2/2'
                                   : todayLogs.length == 1
-                                      ? 'Masuk 1/2'
-                                      : 'Mulai 0/2',
+                                  ? 'Masuk 1/2'
+                                  : 'Mulai 0/2',
                             ),
                           ),
                         ],
@@ -263,15 +308,20 @@ class UserDashboardView extends GetView<UserController> {
                   Text(
                     'Lokasi Saya & Kantor',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppTheme.textPrimary,
-                        ),
+                      color: AppTheme.textPrimary,
+                    ),
                   ),
                   Obx(() {
                     final isWithin = controller.rxIsWithinRadius.value;
                     return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: isWithin ? AppTheme.success.withOpacity(0.1) : AppTheme.warning.withOpacity(0.1),
+                        color: isWithin
+                            ? AppTheme.success.withOpacity(0.1)
+                            : AppTheme.warning.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -310,12 +360,19 @@ class UserDashboardView extends GetView<UserController> {
                           SizedBox(
                             height: 28,
                             width: 28,
-                            child: CircularProgressIndicator(color: AppTheme.primary, strokeWidth: 2.5),
+                            child: CircularProgressIndicator(
+                              color: AppTheme.primary,
+                              strokeWidth: 2.5,
+                            ),
                           ),
                           SizedBox(height: 14),
                           Text(
                             'Menghubungkan sinyal GPS...',
-                            style: TextStyle(color: AppTheme.textSecondary, fontSize: 13, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              color: AppTheme.textSecondary,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
                       ),
@@ -323,7 +380,10 @@ class UserDashboardView extends GetView<UserController> {
                   );
                 }
 
-                final LatLng userLatLng = LatLng(userPos.latitude, userPos.longitude);
+                final LatLng userLatLng = LatLng(
+                  userPos.latitude,
+                  userPos.longitude,
+                );
                 final LatLng targetLatLng = target != null
                     ? LatLng(target.latitude, target.longitude)
                     : userLatLng;
@@ -334,7 +394,10 @@ class UserDashboardView extends GetView<UserController> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: AppTheme.cardShadow,
-                    border: Border.all(color: const Color(0xFFF1F5F9), width: 1.5),
+                    border: Border.all(
+                      color: const Color(0xFFF1F5F9),
+                      width: 1.5,
+                    ),
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: FlutterMap(
@@ -347,10 +410,11 @@ class UserDashboardView extends GetView<UserController> {
                     children: [
                       // OSM Tiles
                       TileLayer(
-                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                         userAgentPackageName: 'com.checkly.app',
                       ),
-                      
+
                       // Geofencing Circle Overlay (100 meters)
                       if (target != null)
                         CircleLayer(
@@ -401,7 +465,10 @@ class UserDashboardView extends GetView<UserController> {
                                   decoration: BoxDecoration(
                                     color: AppTheme.primary,
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white, width: 2),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -443,17 +510,32 @@ class UserDashboardView extends GetView<UserController> {
                               color: AppTheme.primary.withOpacity(0.08),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.my_location_rounded, color: AppTheme.primary, size: 18),
+                            child: const Icon(
+                              Icons.my_location_rounded,
+                              color: AppTheme.primary,
+                              size: 18,
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Koordinat GPS Anda', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
+                                const Text(
+                                  'Koordinat GPS Anda',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppTheme.textSecondary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 Text(
                                   'Lat: ${userPos.latitude.toStringAsFixed(6)}, Lng: ${userPos.longitude.toStringAsFixed(6)}',
-                                  style: const TextStyle(fontSize: 13, color: AppTheme.textPrimary, fontWeight: FontWeight.w600),
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: AppTheme.textPrimary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ],
                             ),
@@ -469,17 +551,32 @@ class UserDashboardView extends GetView<UserController> {
                               color: AppTheme.accent.withOpacity(0.08),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.business_center_outlined, color: AppTheme.accent, size: 18),
+                            child: const Icon(
+                              Icons.business_center_outlined,
+                              color: AppTheme.accent,
+                              size: 18,
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Target Kantor Terdekat', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
+                                const Text(
+                                  'Target Kantor Terdekat',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppTheme.textSecondary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 Text(
                                   target?.name ?? 'Mencari kantor...',
-                                  style: const TextStyle(fontSize: 13, color: AppTheme.textPrimary, fontWeight: FontWeight.w600),
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: AppTheme.textPrimary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ],
                             ),
@@ -492,13 +589,19 @@ class UserDashboardView extends GetView<UserController> {
                         children: [
                           const Text(
                             'Jarak Saat Ini ke Kantor',
-                            style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppTheme.textSecondary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           Text(
                             '${distance.toStringAsFixed(1)} meter',
                             style: TextStyle(
                               fontSize: 15,
-                              color: isWithin ? AppTheme.success : AppTheme.danger,
+                              color: isWithin
+                                  ? AppTheme.success
+                                  : AppTheme.danger,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -513,7 +616,7 @@ class UserDashboardView extends GetView<UserController> {
           ),
         ),
       ),
-      
+
       // Floating pill action button
       floatingActionButton: Obx(() {
         final isWithin = controller.rxIsWithinRadius.value;
@@ -525,13 +628,25 @@ class UserDashboardView extends GetView<UserController> {
           padding: const EdgeInsets.only(bottom: 8.0),
           child: FloatingActionButton.extended(
             onPressed: () => _openAttendanceBottomSheet(context),
-            backgroundColor: isWithin ? AppTheme.primary : const Color(0xFF94A3B8), // Muted grey if outside
+            backgroundColor: isWithin
+                ? AppTheme.primary
+                : const Color(0xFF94A3B8), // Muted grey if outside
             elevation: 8,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            icon: const Icon(Icons.fingerprint_rounded, color: Colors.white, size: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            icon: const Icon(
+              Icons.fingerprint_rounded,
+              color: Colors.white,
+              size: 24,
+            ),
             label: const Text(
               'ABSEN SEKARANG',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
         );
@@ -564,14 +679,22 @@ class UserDashboardView extends GetView<UserController> {
             children: [
               Text(
                 label,
-                style: const TextStyle(fontSize: 9, color: AppTheme.textSecondary, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 9,
+                  color: AppTheme.textSecondary,
+                  fontWeight: FontWeight.bold,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 2),
               Text(
                 value,
-                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -628,19 +751,30 @@ class UserDashboardView extends GetView<UserController> {
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Header Info
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  isCheckOut ? 'Konfirmasi Absen Pulang' : 'Konfirmasi Absen Masuk',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textPrimary),
+                  isCheckOut
+                      ? 'Konfirmasi Absen Pulang'
+                      : 'Konfirmasi Absen Masuk',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textPrimary,
+                  ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
-                    color: isWithin ? AppTheme.success.withOpacity(0.12) : AppTheme.danger.withOpacity(0.12),
+                    color: isWithin
+                        ? AppTheme.success.withOpacity(0.12)
+                        : AppTheme.danger.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -668,16 +802,27 @@ class UserDashboardView extends GetView<UserController> {
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.face_retouching_natural_rounded, size: 48, color: AppTheme.textSecondary),
+                  Icon(
+                    Icons.face_retouching_natural_rounded,
+                    size: 48,
+                    color: AppTheme.textSecondary,
+                  ),
                   SizedBox(height: 12),
                   Text(
                     'Kamera Depan Diaktifkan',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary, fontSize: 14),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                      fontSize: 14,
+                    ),
                   ),
                   SizedBox(height: 4),
                   Text(
                     'Foto selfie Anda akan diambil sebagai verifikasi.',
-                    style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+                    style: TextStyle(
+                      color: AppTheme.textSecondary,
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),
@@ -690,11 +835,19 @@ class UserDashboardView extends GetView<UserController> {
               children: [
                 const Text(
                   'Jarak Target Absensi',
-                  style: TextStyle(color: AppTheme.textSecondary, fontSize: 13, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    color: AppTheme.textSecondary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 Text(
                   '${distance.toStringAsFixed(1)} meter',
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary, fontSize: 14),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimary,
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),
@@ -705,11 +858,19 @@ class UserDashboardView extends GetView<UserController> {
                 children: [
                   const Text(
                     'Batas Maksimal Radius',
-                    style: TextStyle(color: AppTheme.textSecondary, fontSize: 13, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      color: AppTheme.textSecondary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   Text(
                     '${target.radiusMeters.toStringAsFixed(0)} meter',
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary, fontSize: 14),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ),
@@ -728,12 +889,20 @@ class UserDashboardView extends GetView<UserController> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.warning_amber_rounded, color: AppTheme.danger, size: 20),
+                    const Icon(
+                      Icons.warning_amber_rounded,
+                      color: AppTheme.danger,
+                      size: 20,
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         'Anda berada di luar radius kantor sejauh ${(distance - target.radiusMeters).toStringAsFixed(0)}m. Silakan mendekat.',
-                        style: const TextStyle(color: AppTheme.danger, fontSize: 12, fontWeight: FontWeight.w600),
+                        style: const TextStyle(
+                          color: AppTheme.danger,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
@@ -757,14 +926,15 @@ class UserDashboardView extends GetView<UserController> {
                             color: AppTheme.success.withOpacity(0.2),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
-                          )
+                          ),
                         ]
                       : null,
                 ),
                 child: ElevatedButton(
                   onPressed: () {
                     Get.back(); // close bottom sheet
-                    controller.doAttendance(); // triggers image capture & validation
+                    controller
+                        .doAttendance(); // triggers image capture & validation
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
@@ -774,10 +944,16 @@ class UserDashboardView extends GetView<UserController> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 20),
+                      const Icon(
+                        Icons.camera_alt_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
                       Text(
-                        isCheckOut ? 'AMBIL FOTO & ABSEN PULANG' : 'AMBIL FOTO & ABSEN MASUK',
+                        isCheckOut
+                            ? 'AMBIL FOTO & ABSEN PULANG'
+                            : 'AMBIL FOTO & ABSEN MASUK',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,

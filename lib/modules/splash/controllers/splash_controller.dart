@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:checkly/routes/app_pages.dart';
+import 'package:esen/routes/app_pages.dart';
 
 class SplashController extends GetxController {
   @override

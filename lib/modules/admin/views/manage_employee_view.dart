@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:checkly/modules/admin/controllers/admin_controller.dart';
-import 'package:checkly/data/models/user_model.dart';
-import 'package:checkly/core/theme/app_theme.dart';
+import 'package:esen/modules/admin/controllers/admin_controller.dart';
+import 'package:esen/data/models/user_model.dart';
+import 'package:esen/core/theme/app_theme.dart';
 
 class ManageEmployeeView extends GetView<AdminController> {
   const ManageEmployeeView({super.key});
@@ -43,18 +43,29 @@ class ManageEmployeeView extends GetView<AdminController> {
                         color: AppTheme.primary.withOpacity(0.08),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.people_outline_rounded, size: 64, color: AppTheme.primary),
+                      child: const Icon(
+                        Icons.people_outline_rounded,
+                        size: 64,
+                        color: AppTheme.primary,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     const Text(
                       'Belum ada data karyawan',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimary,
+                      ),
                     ),
                     const SizedBox(height: 6),
                     const Text(
                       'Ketuk tombol + di kanan bawah untuk menambahkan.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -68,7 +79,9 @@ class ManageEmployeeView extends GetView<AdminController> {
             separatorBuilder: (_, __) => const SizedBox(height: 14),
             itemBuilder: (context, index) {
               final emp = employees[index];
-              final hasPhoto = emp.photoProfile != null && File(emp.photoProfile!).existsSync();
+              final hasPhoto =
+                  emp.photoProfile != null &&
+                  File(emp.photoProfile!).existsSync();
 
               return Container(
                 padding: const EdgeInsets.all(16),
@@ -84,12 +97,24 @@ class ManageEmployeeView extends GetView<AdminController> {
                     CircleAvatar(
                       backgroundColor: const Color(0xFFF1F5F9),
                       radius: 26,
-                      backgroundImage: hasPhoto ? FileImage(File(emp.photoProfile!)) : null,
+                      backgroundImage: hasPhoto
+                          ? FileImage(File(emp.photoProfile!))
+                          : null,
                       child: hasPhoto
                           ? null
                           : Text(
-                              emp.username.substring(0, emp.username.length > 2 ? 2 : emp.username.length).toUpperCase(),
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primary),
+                              emp.username
+                                  .substring(
+                                    0,
+                                    emp.username.length > 2
+                                        ? 2
+                                        : emp.username.length,
+                                  )
+                                  .toUpperCase(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.primary,
+                              ),
                             ),
                     ),
                     const SizedBox(width: 16),
@@ -133,12 +158,21 @@ class ManageEmployeeView extends GetView<AdminController> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.edit_outlined, color: AppTheme.primary, size: 20),
-                          onPressed: () => _openEmployeeEditorBottomSheet(context, emp),
+                          icon: const Icon(
+                            Icons.edit_outlined,
+                            color: AppTheme.primary,
+                            size: 20,
+                          ),
+                          onPressed: () =>
+                              _openEmployeeEditorBottomSheet(context, emp),
                           tooltip: 'Edit Karyawan',
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete_outline_rounded, color: AppTheme.danger, size: 20),
+                          icon: const Icon(
+                            Icons.delete_outline_rounded,
+                            color: AppTheme.danger,
+                            size: 20,
+                          ),
                           onPressed: () => _confirmDeleteEmployee(context, emp),
                           tooltip: 'Hapus Karyawan',
                         ),
@@ -160,7 +194,10 @@ class ManageEmployeeView extends GetView<AdminController> {
     );
   }
 
-  void _openEmployeeEditorBottomSheet(BuildContext context, UserModel? employee) {
+  void _openEmployeeEditorBottomSheet(
+    BuildContext context,
+    UserModel? employee,
+  ) {
     final isEdit = employee != null;
     final usernameCtrl = TextEditingController(text: employee?.username ?? '');
     final emailCtrl = TextEditingController(text: employee?.email ?? '');
@@ -196,7 +233,11 @@ class ManageEmployeeView extends GetView<AdminController> {
               const SizedBox(height: 24),
               Text(
                 isEdit ? 'Edit Data Karyawan' : 'Tambah Karyawan Baru',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textPrimary),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textPrimary,
+                ),
               ),
               const SizedBox(height: 20),
 
@@ -220,10 +261,16 @@ class ManageEmployeeView extends GetView<AdminController> {
                           child: CircleAvatar(
                             backgroundColor: const Color(0xFFF1F5F9),
                             radius: 36,
-                            backgroundImage: hasPhoto ? FileImage(File(path)) : null,
+                            backgroundImage: hasPhoto
+                                ? FileImage(File(path))
+                                : null,
                             child: hasPhoto
                                 ? null
-                                : const Icon(Icons.person_rounded, color: AppTheme.primary, size: 40),
+                                : const Icon(
+                                    Icons.person_rounded,
+                                    color: AppTheme.primary,
+                                    size: 40,
+                                  ),
                           ),
                         ),
                         Container(
@@ -232,7 +279,11 @@ class ManageEmployeeView extends GetView<AdminController> {
                             color: AppTheme.primary,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 10),
+                          child: const Icon(
+                            Icons.camera_alt_rounded,
+                            color: Colors.white,
+                            size: 10,
+                          ),
                         ),
                       ],
                     ),
@@ -242,14 +293,25 @@ class ManageEmployeeView extends GetView<AdminController> {
               const SizedBox(height: 20),
 
               // Username input
-              const Text('Username', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+              const Text(
+                'Username',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
               const SizedBox(height: 6),
               TextField(
                 controller: usernameCtrl,
-                readOnly: isEdit, // username is UNIQUE, prevent edit in SQLite to avoid conflicts
+                readOnly:
+                    isEdit, // username is UNIQUE, prevent edit in SQLite to avoid conflicts
                 decoration: InputDecoration(
                   hintText: 'Edit Username',
-                  prefixIcon: const Icon(Icons.person_outline_rounded, size: 18),
+                  prefixIcon: const Icon(
+                    Icons.person_outline_rounded,
+                    size: 18,
+                  ),
                   fillColor: isEdit ? const Color(0xFFF8FAFC) : null,
                   filled: isEdit,
                 ),
@@ -257,7 +319,14 @@ class ManageEmployeeView extends GetView<AdminController> {
               const SizedBox(height: 16),
 
               // Email input
-              const Text('Alamat Email', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+              const Text(
+                'Alamat Email',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
               const SizedBox(height: 6),
               TextField(
                 controller: emailCtrl,
@@ -270,23 +339,37 @@ class ManageEmployeeView extends GetView<AdminController> {
               const SizedBox(height: 16),
 
               // Password input
-              const Text('Password', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+              const Text(
+                'Password',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
               const SizedBox(height: 6),
-              Obx(() => TextField(
-                controller: passwordCtrl,
-                obscureText: rxObscure.value,
-                decoration: InputDecoration(
-                  hintText: 'Minimal 6 karakter',
-                  prefixIcon: const Icon(Icons.lock_outline_rounded, size: 18),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      rxObscure.value ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+              Obx(
+                () => TextField(
+                  controller: passwordCtrl,
+                  obscureText: rxObscure.value,
+                  decoration: InputDecoration(
+                    hintText: 'Minimal 6 karakter',
+                    prefixIcon: const Icon(
+                      Icons.lock_outline_rounded,
                       size: 18,
                     ),
-                    onPressed: () => rxObscure.toggle(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        rxObscure.value
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 18,
+                      ),
+                      onPressed: () => rxObscure.toggle(),
+                    ),
                   ),
                 ),
-              )),
+              ),
               const SizedBox(height: 28),
 
               // Action button
@@ -303,60 +386,85 @@ class ManageEmployeeView extends GetView<AdminController> {
                           color: AppTheme.primary.withOpacity(0.2),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
-                        )
+                        ),
                       ],
                     ),
                     child: ElevatedButton(
-                      onPressed: controller.rxIsLoading.value ? null : () async {
-                        final name = usernameCtrl.text.trim();
-                        final email = emailCtrl.text.trim();
-                        final pwd = passwordCtrl.text;
+                      onPressed: controller.rxIsLoading.value
+                          ? null
+                          : () async {
+                              final name = usernameCtrl.text.trim();
+                              final email = emailCtrl.text.trim();
+                              final pwd = passwordCtrl.text;
 
-                        if (name.isEmpty || email.isEmpty || pwd.isEmpty) {
-                          Get.snackbar('Validasi Gagal', 'Semua kolom wajib diisi', backgroundColor: Colors.redAccent, colorText: Colors.white);
-                          return;
-                        }
+                              if (name.isEmpty ||
+                                  email.isEmpty ||
+                                  pwd.isEmpty) {
+                                Get.snackbar(
+                                  'Validasi Gagal',
+                                  'Semua kolom wajib diisi',
+                                  backgroundColor: Colors.redAccent,
+                                  colorText: Colors.white,
+                                );
+                                return;
+                              }
 
-                        if (!email.endsWith('@gmail.com')) {
-                          Get.snackbar('Validasi Gagal', 'Email wajib menggunakan domain @gmail.com', backgroundColor: Colors.redAccent, colorText: Colors.white);
-                          return;
-                        }
+                              if (!email.endsWith('@gmail.com')) {
+                                Get.snackbar(
+                                  'Validasi Gagal',
+                                  'Email wajib menggunakan domain @gmail.com',
+                                  backgroundColor: Colors.redAccent,
+                                  colorText: Colors.white,
+                                );
+                                return;
+                              }
 
-                        if (pwd.length < 6) {
-                          Get.snackbar('Validasi Gagal', 'Password minimal terdiri dari 6 karakter', backgroundColor: Colors.redAccent, colorText: Colors.white);
-                          return;
-                        }
+                              if (pwd.length < 6) {
+                                Get.snackbar(
+                                  'Validasi Gagal',
+                                  'Password minimal terdiri dari 6 karakter',
+                                  backgroundColor: Colors.redAccent,
+                                  colorText: Colors.white,
+                                );
+                                return;
+                              }
 
-                        Get.back(); // close bottom sheet
+                              Get.back(); // close bottom sheet
 
-                        if (isEdit) {
-                          final updated = UserModel(
-                            id: employee.id,
-                            username: employee.username,
-                            email: email,
-                            password: pwd,
-                            role: 'user',
-                            photoProfile: rxPhotoPath.value,
-                          );
-                          await controller.editEmployee(updated);
-                        } else {
-                          // Standard creation
-                          await controller.addEmployee(name, email, pwd);
-                          if (rxPhotoPath.value != null && controller.rxEmployees.isNotEmpty) {
-                            // If a photo was selected, update the newly added employee's photo
-                            final newlyAdded = controller.rxEmployees.firstWhere((e) => e.username == name, orElse: () => controller.rxEmployees.first);
-                            final withPhoto = UserModel(
-                              id: newlyAdded.id,
-                              username: newlyAdded.username,
-                              email: newlyAdded.email,
-                              password: newlyAdded.password,
-                              role: newlyAdded.role,
-                              photoProfile: rxPhotoPath.value,
-                            );
-                            await controller.editEmployee(withPhoto);
-                          }
-                        }
-                      },
+                              if (isEdit) {
+                                final updated = UserModel(
+                                  id: employee.id,
+                                  username: employee.username,
+                                  email: email,
+                                  password: pwd,
+                                  role: 'user',
+                                  photoProfile: rxPhotoPath.value,
+                                );
+                                await controller.editEmployee(updated);
+                              } else {
+                                // Standard creation
+                                await controller.addEmployee(name, email, pwd);
+                                if (rxPhotoPath.value != null &&
+                                    controller.rxEmployees.isNotEmpty) {
+                                  // If a photo was selected, update the newly added employee's photo
+                                  final newlyAdded = controller.rxEmployees
+                                      .firstWhere(
+                                        (e) => e.username == name,
+                                        orElse: () =>
+                                            controller.rxEmployees.first,
+                                      );
+                                  final withPhoto = UserModel(
+                                    id: newlyAdded.id,
+                                    username: newlyAdded.username,
+                                    email: newlyAdded.email,
+                                    password: newlyAdded.password,
+                                    role: newlyAdded.role,
+                                    photoProfile: rxPhotoPath.value,
+                                  );
+                                  await controller.editEmployee(withPhoto);
+                                }
+                              }
+                            },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
@@ -366,11 +474,17 @@ class ManageEmployeeView extends GetView<AdminController> {
                           ? const SizedBox(
                               height: 20,
                               width: 20,
-                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ),
                             )
                           : Text(
                               isEdit ? 'SIMPAN PERUBAHAN' : 'TAMBAH KARYAWAN',
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                     ),
                   ),
@@ -387,7 +501,7 @@ class ManageEmployeeView extends GetView<AdminController> {
 
   void _selectPhotoForEmployee(RxnString pathRx) async {
     final picker = ImagePicker();
-    
+
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.all(24),
@@ -415,15 +529,28 @@ class ManageEmployeeView extends GetView<AdminController> {
             const SizedBox(height: 24),
             const Text(
               'Pilih Sumber Foto Karyawan',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textPrimary),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textPrimary,
+              ),
             ),
             const SizedBox(height: 20),
             ListTile(
-              leading: const Icon(Icons.camera_alt_rounded, color: AppTheme.primary),
-              title: const Text('Kamera', style: TextStyle(fontWeight: FontWeight.bold)),
+              leading: const Icon(
+                Icons.camera_alt_rounded,
+                color: AppTheme.primary,
+              ),
+              title: const Text(
+                'Kamera',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               onTap: () async {
                 Get.back();
-                final file = await picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+                final file = await picker.pickImage(
+                  source: ImageSource.camera,
+                  imageQuality: 50,
+                );
                 if (file != null) {
                   pathRx.value = file.path;
                 }
@@ -431,11 +558,20 @@ class ManageEmployeeView extends GetView<AdminController> {
             ),
             const Divider(height: 1, color: AppTheme.border),
             ListTile(
-              leading: const Icon(Icons.photo_library_rounded, color: AppTheme.primary),
-              title: const Text('Galeri', style: TextStyle(fontWeight: FontWeight.bold)),
+              leading: const Icon(
+                Icons.photo_library_rounded,
+                color: AppTheme.primary,
+              ),
+              title: const Text(
+                'Galeri',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               onTap: () async {
                 Get.back();
-                final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+                final file = await picker.pickImage(
+                  source: ImageSource.gallery,
+                  imageQuality: 50,
+                );
                 if (file != null) {
                   pathRx.value = file.path;
                 }
@@ -453,12 +589,27 @@ class ManageEmployeeView extends GetView<AdminController> {
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         backgroundColor: AppTheme.surface,
-        title: const Text('Hapus Karyawan', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
-        content: Text('Apakah Anda yakin ingin menghapus data karyawan "${employee.username}"? Semua riwayat absensi miliknya juga akan ikut terhapus.', style: const TextStyle(color: AppTheme.textSecondary)),
+        title: const Text(
+          'Hapus Karyawan',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimary,
+          ),
+        ),
+        content: Text(
+          'Apakah Anda yakin ingin menghapus data karyawan "${employee.username}"? Semua riwayat absensi miliknya juga akan ikut terhapus.',
+          style: const TextStyle(color: AppTheme.textSecondary),
+        ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text('BATAL', style: TextStyle(color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'BATAL',
+              style: TextStyle(
+                color: AppTheme.textSecondary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -469,9 +620,17 @@ class ManageEmployeeView extends GetView<AdminController> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.danger,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-            child: const Text('HAPUS', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'HAPUS',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),

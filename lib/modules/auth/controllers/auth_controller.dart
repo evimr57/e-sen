@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:checkly/core/database/db_helper.dart';
-import 'package:checkly/data/models/user_model.dart';
-import 'package:checkly/routes/app_pages.dart';
+import 'package:esen/core/database/db_helper.dart';
+import 'package:esen/data/models/user_model.dart';
+import 'package:esen/routes/app_pages.dart';
 
 class AuthController extends GetxController {
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  
+
   final rxRole = 'user'.obs; // Default role
   final rxIsLoading = false.obs;
   final rxObscurePassword = true.obs; // Toggle password visibility
-  
+
   // Current active user
   final rxCurrentUser = Rxn<UserModel>();
   UserModel? get currentUser => rxCurrentUser.value;
@@ -61,7 +61,7 @@ class AuthController extends GetxController {
         rxCurrentUser.value = user;
         usernameController.clear();
         passwordController.clear();
-        
+
         Get.snackbar(
           'Sukses',
           'Selamat datang kembali, ${user.username}!',
@@ -220,7 +220,7 @@ class AuthController extends GetxController {
         );
         return false;
       }
-      
+
       final userMap = maps.first;
       final user = UserModel.fromMap(userMap);
       final updated = UserModel(

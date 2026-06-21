@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:checkly/modules/admin/controllers/admin_controller.dart';
-import 'package:checkly/core/theme/app_theme.dart';
+import 'package:esen/modules/admin/controllers/admin_controller.dart';
+import 'package:esen/core/theme/app_theme.dart';
 
 class ManageAttendanceView extends GetView<AdminController> {
   const ManageAttendanceView({super.key});
@@ -26,7 +26,9 @@ class ManageAttendanceView extends GetView<AdminController> {
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
               color: AppTheme.surface,
-              border: Border(bottom: BorderSide(color: AppTheme.border, width: 1)),
+              border: Border(
+                bottom: BorderSide(color: AppTheme.border, width: 1),
+              ),
             ),
             child: Column(
               children: [
@@ -34,7 +36,11 @@ class ManageAttendanceView extends GetView<AdminController> {
                   onChanged: (val) => searchRx.value = val.toLowerCase(),
                   decoration: InputDecoration(
                     hintText: 'Cari nama karyawan...',
-                    prefixIcon: const Icon(Icons.search, color: AppTheme.textSecondary, size: 20),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: AppTheme.textSecondary,
+                      size: 20,
+                    ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 12),
                     fillColor: AppTheme.background,
                     enabledBorder: OutlineInputBorder(
@@ -43,12 +49,15 @@ class ManageAttendanceView extends GetView<AdminController> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppTheme.primary, width: 1.5),
+                      borderSide: const BorderSide(
+                        color: AppTheme.primary,
+                        width: 1.5,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 12),
-                
+
                 // Filtering Row
                 Row(
                   children: [
@@ -74,12 +83,9 @@ class ManageAttendanceView extends GetView<AdminController> {
               ],
             ),
           ),
-          
+
           // Divider shadow
-          Container(
-            height: 1,
-            color: const Color(0xFFF1F5F9),
-          ),
+          Container(height: 1, color: const Color(0xFFF1F5F9)),
 
           // 2. Attendance Data Table List
           Expanded(
@@ -88,7 +94,13 @@ class ManageAttendanceView extends GetView<AdminController> {
 
               // Apply Search filter
               if (searchRx.value.isNotEmpty) {
-                logs = logs.where((log) => log.userName.toLowerCase().contains(searchRx.value)).toList().obs;
+                logs = logs
+                    .where(
+                      (log) =>
+                          log.userName.toLowerCase().contains(searchRx.value),
+                    )
+                    .toList()
+                    .obs;
               }
 
               // Apply Status filter
@@ -107,11 +119,18 @@ class ManageAttendanceView extends GetView<AdminController> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.assignment_turned_in_outlined, size: 64, color: Colors.grey[300]),
+                      Icon(
+                        Icons.assignment_turned_in_outlined,
+                        size: 64,
+                        color: Colors.grey[300],
+                      ),
                       const SizedBox(height: 14),
                       const Text(
                         'Tidak ada entri log absensi',
-                        style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -125,10 +144,15 @@ class ManageAttendanceView extends GetView<AdminController> {
                 itemBuilder: (context, index) {
                   final log = logs[index];
                   final isHadir = log.status == 'hadir';
-                  final userLogsForDay = controller.rxAttendanceLogs.where((l) =>
-                    l.userId == log.userId &&
-                    l.dateTime.startsWith(log.dateTime.substring(0, 10))
-                  ).toList();
+                  final userLogsForDay = controller.rxAttendanceLogs
+                      .where(
+                        (l) =>
+                            l.userId == log.userId &&
+                            l.dateTime.startsWith(
+                              log.dateTime.substring(0, 10),
+                            ),
+                      )
+                      .toList();
                   final type = log.getAttendanceType(userLogsForDay);
                   final punctuality = log.getPunctualityStatus(type);
 
@@ -147,19 +171,29 @@ class ManageAttendanceView extends GetView<AdminController> {
                         Row(
                           children: [
                             GestureDetector(
-                              onTap: () => _showPhotoDialog(context, log.photoPath),
+                              onTap: () =>
+                                  _showPhotoDialog(context, log.photoPath),
                               child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: AppTheme.border, width: 1.5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: AppTheme.border,
+                                    width: 1.5,
                                   ),
+                                ),
                                 clipBehavior: Clip.antiAlias,
                                 child: SizedBox(
                                   width: 52,
                                   height: 52,
                                   child: File(log.photoPath).existsSync()
-                                      ? Image.file(File(log.photoPath), fit: BoxFit.cover)
-                                      : const Icon(Icons.broken_image_rounded, color: Colors.grey),
+                                      ? Image.file(
+                                          File(log.photoPath),
+                                          fit: BoxFit.cover,
+                                        )
+                                      : const Icon(
+                                          Icons.broken_image_rounded,
+                                          color: Colors.grey,
+                                        ),
                                 ),
                               ),
                             ),
@@ -170,25 +204,42 @@ class ManageAttendanceView extends GetView<AdminController> {
                                 children: [
                                   Text(
                                     log.userName,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.textPrimary),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: AppTheme.textPrimary,
+                                    ),
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
                                     log.dateTime,
-                                    style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: AppTheme.textSecondary,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                            
+
                             // PopUp Control Menu Button
                             PopupMenuButton<String>(
-                              icon: const Icon(Icons.more_vert, color: AppTheme.textSecondary),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              icon: const Icon(
+                                Icons.more_vert,
+                                color: AppTheme.textSecondary,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                               onSelected: (action) {
                                 if (action == 'toggle') {
-                                  final newStatus = isHadir ? 'di luar radius' : 'hadir';
-                                  controller.updateAttendanceStatus(log, newStatus);
+                                  final newStatus = isHadir
+                                      ? 'di luar radius'
+                                      : 'hadir';
+                                  controller.updateAttendanceStatus(
+                                    log,
+                                    newStatus,
+                                  );
                                 } else if (action == 'delete') {
                                   _showDeleteConfirm(context, log.id!);
                                 }
@@ -199,12 +250,25 @@ class ManageAttendanceView extends GetView<AdminController> {
                                   child: Row(
                                     children: [
                                       Icon(
-                                        isHadir ? Icons.cancel_outlined : Icons.check_circle_outline_rounded,
-                                        color: isHadir ? AppTheme.warning : AppTheme.success,
+                                        isHadir
+                                            ? Icons.cancel_outlined
+                                            : Icons
+                                                  .check_circle_outline_rounded,
+                                        color: isHadir
+                                            ? AppTheme.warning
+                                            : AppTheme.success,
                                         size: 18,
                                       ),
                                       const SizedBox(width: 8),
-                                      Text(isHadir ? 'Pindahkan Luar Radius' : 'Koreksi ke Hadir', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                      Text(
+                                        isHadir
+                                            ? 'Pindahkan Luar Radius'
+                                            : 'Koreksi ke Hadir',
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -212,9 +276,20 @@ class ManageAttendanceView extends GetView<AdminController> {
                                   value: 'delete',
                                   child: Row(
                                     children: [
-                                      Icon(Icons.delete_outline_rounded, color: AppTheme.danger, size: 18),
+                                      Icon(
+                                        Icons.delete_outline_rounded,
+                                        color: AppTheme.danger,
+                                        size: 18,
+                                      ),
                                       const SizedBox(width: 8),
-                                      Text('Hapus Log Absen', style: TextStyle(color: AppTheme.danger, fontSize: 13, fontWeight: FontWeight.bold)),
+                                      Text(
+                                        'Hapus Log Absen',
+                                        style: TextStyle(
+                                          color: AppTheme.danger,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -222,15 +297,30 @@ class ManageAttendanceView extends GetView<AdminController> {
                             ),
                           ],
                         ),
-                        
+
                         const Divider(height: 24, color: Color(0xFFF1F5F9)),
 
                         // Row Details: GPS location parameters & indicators
                         Row(
                           children: [
-                            Expanded(child: _buildLogMeta(Icons.radar, 'Jarak target: ${log.distance.toStringAsFixed(1)}m')),
-                            Expanded(child: _buildLogMeta(Icons.location_on_outlined, 'Lat: ${log.latitude.toStringAsFixed(5)}')),
-                            Expanded(child: _buildLogMeta(Icons.explore_outlined, 'Lng: ${log.longitude.toStringAsFixed(5)}')),
+                            Expanded(
+                              child: _buildLogMeta(
+                                Icons.radar,
+                                'Jarak target: ${log.distance.toStringAsFixed(1)}m',
+                              ),
+                            ),
+                            Expanded(
+                              child: _buildLogMeta(
+                                Icons.location_on_outlined,
+                                'Lat: ${log.latitude.toStringAsFixed(5)}',
+                              ),
+                            ),
+                            Expanded(
+                              child: _buildLogMeta(
+                                Icons.explore_outlined,
+                                'Lng: ${log.longitude.toStringAsFixed(5)}',
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 14),
@@ -239,70 +329,100 @@ class ManageAttendanceView extends GetView<AdminController> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('Verifikasi Absensi:', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
+                            const Text(
+                              'Verifikasi Absensi:',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: AppTheme.textSecondary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             Row(
                               children: [
                                 // 1. Type Badge
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: type == 'Masuk' 
-                                        ? const Color(0xFF3B82F6).withOpacity(0.12)
+                                    color: type == 'Masuk'
+                                        ? const Color(
+                                            0xFF3B82F6,
+                                          ).withOpacity(0.12)
                                         : type == 'Pulang'
-                                            ? const Color(0xFFFF6B00).withOpacity(0.12)
-                                            : Colors.grey.withOpacity(0.12),
+                                        ? const Color(
+                                            0xFFFF6B00,
+                                          ).withOpacity(0.12)
+                                        : Colors.grey.withOpacity(0.12),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
                                     type.toUpperCase(),
                                     style: TextStyle(
-                                      color: type == 'Masuk' 
+                                      color: type == 'Masuk'
                                           ? const Color(0xFF3B82F6)
                                           : type == 'Pulang'
-                                              ? const Color(0xFFFF6B00)
-                                              : Colors.grey,
+                                          ? const Color(0xFFFF6B00)
+                                          : Colors.grey,
                                       fontSize: 9,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                
+
                                 // 2. Punctuality/Status Badge
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: (punctuality == 'Tepat Waktu' || punctuality == 'Pulang Normal')
+                                    color:
+                                        (punctuality == 'Tepat Waktu' ||
+                                            punctuality == 'Pulang Normal')
                                         ? AppTheme.success.withOpacity(0.12)
-                                        : (punctuality == 'Terlambat' || punctuality == 'Pulang Cepat')
-                                            ? AppTheme.warning.withOpacity(0.12)
-                                            : AppTheme.danger.withOpacity(0.12),
+                                        : (punctuality == 'Terlambat' ||
+                                              punctuality == 'Pulang Cepat')
+                                        ? AppTheme.warning.withOpacity(0.12)
+                                        : AppTheme.danger.withOpacity(0.12),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Row(
                                     children: [
                                       Icon(
-                                        (punctuality == 'Tepat Waktu' || punctuality == 'Pulang Normal')
+                                        (punctuality == 'Tepat Waktu' ||
+                                                punctuality == 'Pulang Normal')
                                             ? Icons.check_circle_rounded
-                                            : (punctuality == 'Terlambat' || punctuality == 'Pulang Cepat')
-                                                ? Icons.warning_amber_rounded
-                                                : Icons.cancel_outlined,
-                                        color: (punctuality == 'Tepat Waktu' || punctuality == 'Pulang Normal')
+                                            : (punctuality == 'Terlambat' ||
+                                                  punctuality == 'Pulang Cepat')
+                                            ? Icons.warning_amber_rounded
+                                            : Icons.cancel_outlined,
+                                        color:
+                                            (punctuality == 'Tepat Waktu' ||
+                                                punctuality == 'Pulang Normal')
                                             ? AppTheme.success
-                                            : (punctuality == 'Terlambat' || punctuality == 'Pulang Cepat')
-                                                ? AppTheme.warning
-                                                : AppTheme.danger,
+                                            : (punctuality == 'Terlambat' ||
+                                                  punctuality == 'Pulang Cepat')
+                                            ? AppTheme.warning
+                                            : AppTheme.danger,
                                         size: 12,
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
                                         punctuality.toUpperCase(),
                                         style: TextStyle(
-                                          color: (punctuality == 'Tepat Waktu' || punctuality == 'Pulang Normal')
+                                          color:
+                                              (punctuality == 'Tepat Waktu' ||
+                                                  punctuality ==
+                                                      'Pulang Normal')
                                               ? AppTheme.success
-                                              : (punctuality == 'Terlambat' || punctuality == 'Pulang Cepat')
-                                                  ? AppTheme.warning
-                                                  : AppTheme.danger,
+                                              : (punctuality == 'Terlambat' ||
+                                                    punctuality ==
+                                                        'Pulang Cepat')
+                                              ? AppTheme.warning
+                                              : AppTheme.danger,
                                           fontSize: 9,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -335,7 +455,11 @@ class ManageAttendanceView extends GetView<AdminController> {
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppTheme.textPrimary,
+              fontWeight: FontWeight.w500,
+            ),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -379,11 +503,19 @@ class ManageAttendanceView extends GetView<AdminController> {
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Hapus Log Absensi'),
-        content: const Text('Apakah Anda yakin ingin menghapus data absensi ini secara permanen? Langkah ini tidak dapat dibatalkan.'),
+        content: const Text(
+          'Apakah Anda yakin ingin menghapus data absensi ini secara permanen? Langkah ini tidak dapat dibatalkan.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text('Batal', style: TextStyle(color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'Batal',
+              style: TextStyle(
+                color: AppTheme.textSecondary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -391,7 +523,10 @@ class ManageAttendanceView extends GetView<AdminController> {
               controller.deleteAttendanceLog(id);
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.danger),
-            child: const Text('Hapus Permanen', style: TextStyle(color: Colors.white)),
+            child: const Text(
+              'Hapus Permanen',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -415,7 +550,11 @@ class ManageAttendanceView extends GetView<AdminController> {
                   ? Image.file(File(path), fit: BoxFit.contain)
                   : const Padding(
                       padding: EdgeInsets.all(40.0),
-                      child: Icon(Icons.broken_image_rounded, size: 64, color: Colors.grey),
+                      child: Icon(
+                        Icons.broken_image_rounded,
+                        size: 64,
+                        color: Colors.grey,
+                      ),
                     ),
             ),
             const SizedBox(height: 12),
