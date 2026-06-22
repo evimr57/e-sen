@@ -289,7 +289,10 @@ class UserProfileView extends GetView<UserController> {
                       )
                       .toList();
                   final type = log.getAttendanceType(userLogsForDay);
-                  final punctuality = log.getPunctualityStatus(type);
+                  final schedule = controller.getScheduleForDateTimeString(
+                    log.dateTime,
+                  );
+                  final punctuality = log.getPunctualityStatus(type, schedule);
 
                   return Container(
                     padding: const EdgeInsets.all(16),

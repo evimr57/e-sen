@@ -5,6 +5,7 @@ import 'package:esen/core/database/db_helper.dart';
 import 'package:esen/data/models/coordinate_model.dart';
 import 'package:esen/data/models/attendance_model.dart';
 import 'package:esen/data/models/user_model.dart';
+import 'package:esen/data/models/work_schedule_model.dart';
 import 'package:esen/core/theme/app_theme.dart';
 
 class AdminController extends GetxController {
@@ -43,6 +44,9 @@ class AdminController extends GetxController {
   final rxTotalHadir = 0.obs;
   final rxTotalLuarRadius = 0.obs;
 
+  // Work schedule (7 days, Senin=1 ... Minggu=7)
+  final rxWorkSchedules = <WorkScheduleModel>[].obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -78,6 +82,7 @@ class AdminController extends GetxController {
     try {
       await loadCoordinates();
       await loadAttendanceLogs();
+      await loadWorkSchedules();
       await calculateStats();
       await loadEmployees();
     } catch (e) {
@@ -451,6 +456,62 @@ class AdminController extends GetxController {
       );
     } finally {
       rxIsLoading.value = false;
+    }
+  }
+
+  // --- Work Schedule Operations ---
+
+  /// Loads all 7 day schedules from the database into [rxWorkSchedules].
+  Future<void> loadWorkSchedules() async {
+    final schedules = await DbHelper.instance.getWorkSchedules();
+    rxWorkSchedules.assignAll(schedules);
+  }
+
+  /// Saves an updated schedule for a single day. [updated] must carry the
+  /// same `id` as the existing row (use `copyWith` on the original model).
+  Future<void> saveWorkSchedule(WorkScheduleModel updated) async {
+    rxIsLoading.value = true;
+    try {
+      await DbHelper.instance.updateWorkSchedule(updated);
+      Get.snackbar(
+        'Sukses',
+        'Jadwal ${updated.dayName} berhasil diperbarui',
+        backgroundColor: const Color(0xFF10B981),
+        colorText: Colors.white,
+      );
+      await loadWorkSchedules();
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Gagal memperbarui jadwal: $e',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    } finally {
+      rxIsLoading.value = false;
+    }
+  }
+
+  /// Returns the schedule matching [date]'s day of week from the currently
+  /// loaded [rxWorkSchedules], or null if not found (e.g. not loaded yet).
+  /// Useful when computing punctuality for a specific attendance log.
+  WorkScheduleModel? getScheduleForDate(DateTime date) {
+    final dayOfWeek = date.weekday; // 1 = Senin ... 7 = Minggu
+    try {
+      return rxWorkSchedules.firstWhere((s) => s.dayOfWeek == dayOfWeek);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Convenience overload: parses an ISO-ish dateTime string ("yyyy-MM-dd...")
+  /// and returns the matching schedule.
+  WorkScheduleModel? getScheduleForDateTimeString(String dateTimeStr) {
+    try {
+      final date = DateTime.parse(dateTimeStr);
+      return getScheduleForDate(date);
+    } catch (_) {
+      return null;
     }
   }
 }

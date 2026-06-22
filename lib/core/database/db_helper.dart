@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 import 'package:esen/data/models/user_model.dart';
 import 'package:esen/data/models/coordinate_model.dart';
 import 'package:esen/data/models/attendance_model.dart';
+import 'package:esen/data/models/work_schedule_model.dart';
 
 class DbHelper {
   static final DbHelper instance = DbHelper._init();
@@ -68,6 +69,21 @@ class DbHelper {
           )
         ''');
 
+        // Work schedule table: one row per day of week (1=Senin ... 7=Minggu)
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS work_schedule (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            day_of_week INTEGER NOT NULL UNIQUE,
+            is_active INTEGER NOT NULL DEFAULT 1,
+            start_time TEXT NOT NULL DEFAULT '08:00',
+            end_time TEXT NOT NULL DEFAULT '16:00',
+            latitude REAL NOT NULL,
+            longitude REAL NOT NULL,
+            radius_meters REAL NOT NULL DEFAULT 100.0,
+            location_name TEXT NOT NULL DEFAULT 'Lokasi Kerja'
+          )
+        ''');
+
         // Seed admin if not present
         final adminCheck = await db.query(
           'users',
@@ -116,6 +132,34 @@ class DbHelper {
             'radius_meters': 100.0,
           });
         }
+
+        // Seed work_schedule if empty, using the primary coordinate as default location
+        final scheduleCheck = await db.query('work_schedule');
+        if (scheduleCheck.isEmpty) {
+          final coords = await db.query('coordinates', limit: 1);
+          final lat = coords.isNotEmpty
+              ? (coords.first['latitude'] as num).toDouble()
+              : -6.175392;
+          final lng = coords.isNotEmpty
+              ? (coords.first['longitude'] as num).toDouble()
+              : 106.827153;
+          final rad = coords.isNotEmpty
+              ? (coords.first['radius_meters'] as num).toDouble()
+              : 100.0;
+          final locName = coords.isNotEmpty
+              ? coords.first['name'] as String
+              : 'Kantor Utama';
+
+          final defaults = WorkScheduleModel.defaultSchedules(
+            latitude: lat,
+            longitude: lng,
+            radiusMeters: rad,
+            locationName: locName,
+          );
+          for (final schedule in defaults) {
+            await db.insert('work_schedule', schedule.toMap());
+          }
+        }
       },
     );
   }
@@ -160,6 +204,21 @@ class DbHelper {
       )
     ''');
 
+    // 4. Create work_schedule table
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS work_schedule (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        day_of_week INTEGER NOT NULL UNIQUE,
+        is_active INTEGER NOT NULL DEFAULT 1,
+        start_time TEXT NOT NULL DEFAULT '08:00',
+        end_time TEXT NOT NULL DEFAULT '16:00',
+        latitude REAL NOT NULL,
+        longitude REAL NOT NULL,
+        radius_meters REAL NOT NULL DEFAULT 100.0,
+        location_name TEXT NOT NULL DEFAULT 'Lokasi Kerja'
+      )
+    ''');
+
     // Seed default Admin & User
     final adminCheck = await db.query(
       'users',
@@ -198,6 +257,20 @@ class DbHelper {
         'longitude': 106.827153,
         'radius_meters': 100.0,
       });
+    }
+
+    // Seed default work_schedule (Mon-Fri 08:00-16:00, Sat-Sun off)
+    final scheduleCheck = await db.query('work_schedule');
+    if (scheduleCheck.isEmpty) {
+      final defaults = WorkScheduleModel.defaultSchedules(
+        latitude: -6.175392,
+        longitude: 106.827153,
+        radiusMeters: 100.0,
+        locationName: 'Kantor Pusat Monas',
+      );
+      for (final schedule in defaults) {
+        await db.insert('work_schedule', schedule.toMap());
+      }
     }
   }
 
@@ -340,5 +413,40 @@ class DbHelper {
   Future<int> deleteAttendance(int id) async {
     final db = await instance.database;
     return await db.delete('attendance', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // --- WORK SCHEDULE OPERATIONS ---
+
+  /// Returns all 7 work schedule rows, ordered Senin (1) to Minggu (7).
+  Future<List<WorkScheduleModel>> getWorkSchedules() async {
+    final db = await instance.database;
+    final maps = await db.query('work_schedule', orderBy: 'day_of_week ASC');
+    return maps.map((e) => WorkScheduleModel.fromMap(e)).toList();
+  }
+
+  /// Returns the schedule for a specific day (1=Senin ... 7=Minggu), or null
+  /// if somehow not seeded yet.
+  Future<WorkScheduleModel?> getScheduleForDay(int dayOfWeek) async {
+    final db = await instance.database;
+    final maps = await db.query(
+      'work_schedule',
+      where: 'day_of_week = ?',
+      whereArgs: [dayOfWeek],
+      limit: 1,
+    );
+    if (maps.isNotEmpty) {
+      return WorkScheduleModel.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  Future<int> updateWorkSchedule(WorkScheduleModel schedule) async {
+    final db = await instance.database;
+    return await db.update(
+      'work_schedule',
+      schedule.toMap(),
+      where: 'id = ?',
+      whereArgs: [schedule.id],
+    );
   }
 }

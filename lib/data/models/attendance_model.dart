@@ -1,3 +1,5 @@
+import 'package:esen/data/models/work_schedule_model.dart';
+
 class AttendanceModel {
   final int? id;
   final int userId;
@@ -58,29 +60,60 @@ class AttendanceModel {
     return 'Absen Lainnya';
   }
 
-  String getPunctualityStatus(String type) {
+  /// Determines punctuality status against a dynamic [schedule] for the day
+  /// this attendance record falls on. If [schedule] is null or marked as a
+  /// day off (isActive == false), falls back to a neutral 'Hadir' status
+  /// since there's no defined start/end time to compare against.
+  ///
+  /// Returns one of: 'Luar Radius', 'Tepat Waktu', 'Terlambat',
+  /// 'Pulang Normal', 'Pulang Cepat', 'Hadir'.
+  String getPunctualityStatus(String type, WorkScheduleModel? schedule) {
     if (status != 'hadir') return 'Luar Radius';
-    
+    if (schedule == null || !schedule.isActive) return 'Hadir';
+
     try {
       final timeStr = dateTime.substring(11, 16); // "HH:mm"
-      final parts = timeStr.split(':');
-      final hour = int.parse(parts[0]);
-      final minute = int.parse(parts[1]);
-      
+      final actualMinutes = _toMinutes(timeStr);
+
       if (type == 'Masuk') {
-        if (hour < 8 || (hour == 8 && minute == 0)) {
-          return 'Tepat Waktu';
-        } else {
-          return 'Terlambat';
-        }
+        final scheduledMinutes = _toMinutes(schedule.startTime);
+        return actualMinutes <= scheduledMinutes ? 'Tepat Waktu' : 'Terlambat';
       } else if (type == 'Pulang') {
-        if (hour >= 16) {
-          return 'Pulang Normal';
-        } else {
-          return 'Pulang Cepat';
-        }
+        final scheduledMinutes = _toMinutes(schedule.endTime);
+        return actualMinutes >= scheduledMinutes
+            ? 'Pulang Normal'
+            : 'Pulang Cepat';
       }
     } catch (_) {}
     return 'Hadir';
+  }
+
+  /// Calculates how many minutes late (positive) or early (negative) this
+  /// attendance record is, relative to [schedule]. Returns null if not
+  /// applicable (e.g. day off, no schedule, or status isn't 'hadir').
+  int? getMinutesDifference(String type, WorkScheduleModel? schedule) {
+    if (status != 'hadir') return null;
+    if (schedule == null || !schedule.isActive) return null;
+
+    try {
+      final timeStr = dateTime.substring(11, 16);
+      final actualMinutes = _toMinutes(timeStr);
+
+      if (type == 'Masuk') {
+        final scheduledMinutes = _toMinutes(schedule.startTime);
+        return actualMinutes - scheduledMinutes; // positive = telat
+      } else if (type == 'Pulang') {
+        final scheduledMinutes = _toMinutes(schedule.endTime);
+        return scheduledMinutes - actualMinutes; // positive = pulang cepat
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  static int _toMinutes(String hhmm) {
+    final parts = hhmm.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
+    return hour * 60 + minute;
   }
 }

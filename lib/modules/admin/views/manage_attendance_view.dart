@@ -154,7 +154,11 @@ class ManageAttendanceView extends GetView<AdminController> {
                       )
                       .toList();
                   final type = log.getAttendanceType(userLogsForDay);
-                  final punctuality = log.getPunctualityStatus(type);
+                  final schedule = controller.getScheduleForDateTimeString(
+                    log.dateTime,
+                  );
+                  final punctuality = log.getPunctualityStatus(type, schedule);
+                  final minutesDiff = log.getMinutesDifference(type, schedule);
 
                   return Container(
                     padding: const EdgeInsets.all(18),
@@ -337,7 +341,10 @@ class ManageAttendanceView extends GetView<AdminController> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Row(
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 6,
+                              alignment: WrapAlignment.end,
                               children: [
                                 // 1. Type Badge
                                 Container(
@@ -349,12 +356,12 @@ class ManageAttendanceView extends GetView<AdminController> {
                                     color: type == 'Masuk'
                                         ? const Color(
                                             0xFF3B82F6,
-                                          ).withOpacity(0.12)
+                                          ).withValues(alpha: 0.12)
                                         : type == 'Pulang'
                                         ? const Color(
                                             0xFFFF6B00,
-                                          ).withOpacity(0.12)
-                                        : Colors.grey.withOpacity(0.12),
+                                          ).withValues(alpha: 0.12)
+                                        : Colors.grey.withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -370,7 +377,6 @@ class ManageAttendanceView extends GetView<AdminController> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 8),
 
                                 // 2. Punctuality/Status Badge
                                 Container(
@@ -382,14 +388,21 @@ class ManageAttendanceView extends GetView<AdminController> {
                                     color:
                                         (punctuality == 'Tepat Waktu' ||
                                             punctuality == 'Pulang Normal')
-                                        ? AppTheme.success.withOpacity(0.12)
+                                        ? AppTheme.success.withValues(
+                                            alpha: 0.12,
+                                          )
                                         : (punctuality == 'Terlambat' ||
                                               punctuality == 'Pulang Cepat')
-                                        ? AppTheme.warning.withOpacity(0.12)
-                                        : AppTheme.danger.withOpacity(0.12),
+                                        ? AppTheme.warning.withValues(
+                                            alpha: 0.12,
+                                          )
+                                        : AppTheme.danger.withValues(
+                                            alpha: 0.12,
+                                          ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(
                                         (punctuality == 'Tepat Waktu' ||
@@ -411,7 +424,13 @@ class ManageAttendanceView extends GetView<AdminController> {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        punctuality.toUpperCase(),
+                                        minutesDiff != null &&
+                                                minutesDiff != 0 &&
+                                                (punctuality == 'Terlambat' ||
+                                                    punctuality ==
+                                                        'Pulang Cepat')
+                                            ? '${punctuality.toUpperCase()} ${minutesDiff.abs()} MENIT'
+                                            : punctuality.toUpperCase(),
                                         style: TextStyle(
                                           color:
                                               (punctuality == 'Tepat Waktu' ||

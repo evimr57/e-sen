@@ -26,7 +26,7 @@ class UserDashboardView extends GetView<UserController> {
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF0F172A).withOpacity(0.06),
+                color: const Color(0xFF0F172A).withValues(alpha: 0.06),
                 blurRadius: 20,
                 offset: const Offset(0, -4),
               ),
@@ -41,7 +41,7 @@ class UserDashboardView extends GetView<UserController> {
               }
             },
             backgroundColor: AppTheme.surface,
-            indicatorColor: AppTheme.primary.withOpacity(0.12),
+            indicatorColor: AppTheme.primary.withValues(alpha: 0.12),
             height: 72,
             labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
             destinations: const [
@@ -230,7 +230,7 @@ class UserDashboardView extends GetView<UserController> {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.12),
+                              color: statusColor.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
@@ -305,12 +305,15 @@ class UserDashboardView extends GetView<UserController> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Lokasi Saya & Kantor',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppTheme.textPrimary,
+                  Expanded(
+                    child: Text(
+                      'Lokasi Saya & Kantor',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: AppTheme.textPrimary,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Obx(() {
                     final isWithin = controller.rxIsWithinRadius.value;
                     return Container(
@@ -320,8 +323,8 @@ class UserDashboardView extends GetView<UserController> {
                       ),
                       decoration: BoxDecoration(
                         color: isWithin
-                            ? AppTheme.success.withOpacity(0.1)
-                            : AppTheme.warning.withOpacity(0.1),
+                            ? AppTheme.success.withValues(alpha: 0.1)
+                            : AppTheme.warning.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -412,7 +415,7 @@ class UserDashboardView extends GetView<UserController> {
                       TileLayer(
                         urlTemplate:
                             'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.checkly.app',
+                        userAgentPackageName: 'com.esen.app',
                       ),
 
                       // Geofencing Circle Overlay (100 meters)
@@ -421,7 +424,7 @@ class UserDashboardView extends GetView<UserController> {
                           circles: [
                             CircleMarker(
                               point: targetLatLng,
-                              color: AppTheme.primary.withOpacity(0.12),
+                              color: AppTheme.primary.withValues(alpha: 0.12),
                               borderStrokeWidth: 1.5,
                               borderColor: AppTheme.primary,
                               useRadiusInMeter: true,
@@ -455,7 +458,9 @@ class UserDashboardView extends GetView<UserController> {
                                   width: 20,
                                   height: 20,
                                   decoration: BoxDecoration(
-                                    color: AppTheme.primary.withOpacity(0.25),
+                                    color: AppTheme.primary.withValues(
+                                      alpha: 0.25,
+                                    ),
                                     shape: BoxShape.circle,
                                   ),
                                 ),
@@ -507,7 +512,7 @@ class UserDashboardView extends GetView<UserController> {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: AppTheme.primary.withOpacity(0.08),
+                              color: AppTheme.primary.withValues(alpha: 0.08),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -548,7 +553,7 @@ class UserDashboardView extends GetView<UserController> {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: AppTheme.accent.withOpacity(0.08),
+                              color: AppTheme.accent.withValues(alpha: 0.08),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -666,7 +671,7 @@ class UserDashboardView extends GetView<UserController> {
         Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.08),
+            color: iconColor.withValues(alpha: 0.08),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: iconColor, size: 14),
@@ -756,16 +761,19 @@ class UserDashboardView extends GetView<UserController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  isCheckOut
-                      ? 'Konfirmasi Absen Pulang'
-                      : 'Konfirmasi Absen Masuk',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: AppTheme.textPrimary,
+                Expanded(
+                  child: Text(
+                    isCheckOut
+                        ? 'Konfirmasi Absen Pulang'
+                        : 'Konfirmasi Absen Masuk',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textPrimary,
+                    ),
                   ),
                 ),
+                const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -773,8 +781,8 @@ class UserDashboardView extends GetView<UserController> {
                   ),
                   decoration: BoxDecoration(
                     color: isWithin
-                        ? AppTheme.success.withOpacity(0.12)
-                        : AppTheme.danger.withOpacity(0.12),
+                        ? AppTheme.success.withValues(alpha: 0.12)
+                        : AppTheme.danger.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -883,9 +891,11 @@ class UserDashboardView extends GetView<UserController> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: AppTheme.danger.withOpacity(0.08),
+                  color: AppTheme.danger.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppTheme.danger.withOpacity(0.2)),
+                  border: Border.all(
+                    color: AppTheme.danger.withValues(alpha: 0.2),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -923,7 +933,7 @@ class UserDashboardView extends GetView<UserController> {
                   boxShadow: isWithin
                       ? [
                           BoxShadow(
-                            color: AppTheme.success.withOpacity(0.2),
+                            color: AppTheme.success.withValues(alpha: 0.2),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),

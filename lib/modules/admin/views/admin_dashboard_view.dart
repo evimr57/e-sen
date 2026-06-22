@@ -305,7 +305,13 @@ class AdminDashboardView extends GetView<AdminController> {
                         )
                         .toList();
                     final type = log.getAttendanceType(userLogsForDay);
-                    final punctuality = log.getPunctualityStatus(type);
+                    final schedule = controller.getScheduleForDateTimeString(
+                      log.dateTime,
+                    );
+                    final punctuality = log.getPunctualityStatus(
+                      type,
+                      schedule,
+                    );
 
                     return Container(
                       decoration: BoxDecoration(

@@ -9,6 +9,7 @@ import 'package:esen/core/database/db_helper.dart';
 import 'package:esen/modules/auth/controllers/auth_controller.dart';
 import 'package:esen/data/models/coordinate_model.dart';
 import 'package:esen/data/models/attendance_model.dart';
+import 'package:esen/data/models/work_schedule_model.dart';
 import 'package:esen/core/theme/app_theme.dart';
 
 class UserController extends GetxController {
@@ -23,6 +24,9 @@ class UserController extends GetxController {
   // Personal Attendance History
   final rxAttendanceHistory = <AttendanceModel>[].obs;
 
+  // Work schedule (7 days, Senin=1 ... Minggu=7)
+  final rxWorkSchedules = <WorkScheduleModel>[].obs;
+
   // Selected Bottom Navigation Index
   final rxNavIndex = 0.obs;
 
@@ -33,6 +37,7 @@ class UserController extends GetxController {
     super.onInit();
     initLocationTracking();
     loadHistory();
+    loadWorkSchedules();
   }
 
   Future<void> initLocationTracking() async {
@@ -134,6 +139,35 @@ class UserController extends GetxController {
     if (user != null && user.id != null) {
       final history = await DbHelper.instance.getAttendanceByUserId(user.id!);
       rxAttendanceHistory.assignAll(history);
+    }
+  }
+
+  /// Loads all 7 day schedules from the database into [rxWorkSchedules].
+  Future<void> loadWorkSchedules() async {
+    final schedules = await DbHelper.instance.getWorkSchedules();
+    rxWorkSchedules.assignAll(schedules);
+  }
+
+  /// Returns the schedule matching [date]'s day of week from the currently
+  /// loaded [rxWorkSchedules], or null if not found (e.g. not loaded yet).
+  /// Useful when computing punctuality for a specific attendance log.
+  WorkScheduleModel? getScheduleForDate(DateTime date) {
+    final dayOfWeek = date.weekday; // 1 = Senin ... 7 = Minggu
+    try {
+      return rxWorkSchedules.firstWhere((s) => s.dayOfWeek == dayOfWeek);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Convenience overload: parses an ISO-ish dateTime string ("yyyy-MM-dd...")
+  /// and returns the matching schedule.
+  WorkScheduleModel? getScheduleForDateTimeString(String dateTimeStr) {
+    try {
+      final date = DateTime.parse(dateTimeStr);
+      return getScheduleForDate(date);
+    } catch (_) {
+      return null;
     }
   }
 
